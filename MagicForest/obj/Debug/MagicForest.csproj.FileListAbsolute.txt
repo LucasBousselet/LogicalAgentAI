@@ -1,1 +1,2 @@
 C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\MagicForest\bin\Debug\MagicForest.exe.config
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\bin\Debug\MagicForest.exe.config
