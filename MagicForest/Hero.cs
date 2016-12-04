@@ -8,31 +8,34 @@ namespace MagicForest
 {
     class Hero
     {
-        private bool lightSensor;
+        private bool _lightSensor = new bool();
 
-        private bool stenchSensor;
+        private bool _stenchSensor = new bool();
 
-        private bool windSensor;
+        private bool _windSensor = new bool();
 
-        public int score;
+        public int _score = new int();
+
+        private int[] _position;
 
         public Hero()
         {
-            this.lightSensor = false;
-            this.stenchSensor = false;
-            this.windSensor = false;
-            this.score = 0;
+            this._lightSensor = false;
+            this._stenchSensor = false;
+            this._windSensor = false;
+            this._score = 0;
+            this._position = new int[2] { 0, 0 };
         }
 
         public bool HasLight
         {
             get
             {
-                return lightSensor;
+                return _lightSensor;
             }
             set
             {
-                lightSensor = value;
+                _lightSensor = value;
             }
         }
 
@@ -40,11 +43,11 @@ namespace MagicForest
         {
             get
             {
-                return stenchSensor;
+                return _stenchSensor;
             }
             set
             {
-                stenchSensor = value;
+                _stenchSensor = value;
             }
         }
 
@@ -52,15 +55,20 @@ namespace MagicForest
         {
             get
             {
-                return windSensor;
+                return _windSensor;
             }
             set
             {
-                windSensor = value;
+                _windSensor = value;
             }
         }
 
         public void ThrowRock()
+        {
+
+        }
+
+        public void ActivatePortal()
         {
 
         }

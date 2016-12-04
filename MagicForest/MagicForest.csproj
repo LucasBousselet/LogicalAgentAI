@@ -55,6 +55,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="ForestCell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -63,6 +67,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ForestCell.xaml.cs">
+      <DependentUpon>ForestCell.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Hero.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -94,6 +102,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="hole.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="danger.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="wind.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="alien.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="hero.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
