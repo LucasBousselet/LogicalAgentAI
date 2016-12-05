@@ -20,9 +20,35 @@ namespace MagicForest
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        private static int m_iForestSize = 3;
+        private static ForestCell[,] m_afcForest = null;
+
+        public static int ForestSize
+        {
+            get
+            {
+                return m_iForestSize;
+            }
+        }
+
+        public static ForestCell[,] Forest
+        {
+            get
+            {
+                return m_afcForest;
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+            m_afcForest = new ForestCell[m_iForestSize, m_iForestSize];
+        }
+
+        public static void StopExecution()
+        {
+            // STOP EXECUTION : griser bouton + messagebox
         }
     }
 }

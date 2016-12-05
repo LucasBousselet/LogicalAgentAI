@@ -6,71 +6,126 @@ using System.Threading.Tasks;
 
 namespace MagicForest
 {
-    class Hero
+    public class Hero
     {
-        private bool _lightSensor = new bool();
+        private string m_sDirectionFacing;
+        public readonly string[] m_asPossibleDirections = new string[4] { "top", "right", "bottom", "left" };
+        private int m_iScore;
+        private ForestCell m_fcCurrentCell;
+        private bool m_bStillAlive = true;
+        private bool m_bSmellDetected = false;
+        private bool m_bWindDetected = false;
+        private bool m_bLightDetected = false;
 
-        private bool _stenchSensor = new bool();
+        public string DirectionFacing
+        {
+            get
+            {
+                return m_sDirectionFacing;
+            }
+            set
+            {
+                m_sDirectionFacing = value;
+            }
+        }
 
-        private bool _windSensor = new bool();
+        public int Score
+        {
+            get
+            {
+                return m_iScore;
+            }
+            set
+            {
+                m_iScore = value;
+            }
+        }
 
-        public int _score = new int();
+        public ForestCell CurrentCell
+        {
+            get
+            {
+                return m_fcCurrentCell;
+            }
+            set
+            {
+                m_fcCurrentCell = value;
+                // UPDATE SPRITE EMPLACEMENT
+            }
+        }
 
-        private int[] _position;
+        public bool StillAlive
+        {
+            set
+            {
+                MainWindow.StopExecution();
+            }
+        }
 
         public Hero()
         {
-            this._lightSensor = false;
-            this._stenchSensor = false;
-            this._windSensor = false;
-            this._score = 0;
-            this._position = new int[2] { 0, 0 };
+            m_sDirectionFacing = m_asPossibleDirections[1];
+            m_iScore = 0;
+            m_fcCurrentCell = MainWindow.Forest[0, 0];
         }
 
-        public bool HasLight
+        public ForestCell getFrontCell()
         {
-            get
+            ForestCell fcResult = null;
+            switch (m_sDirectionFacing)
             {
-                return _lightSensor;
+                case "top":
+                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex - 1, m_fcCurrentCell.LineIndex];
+                    break;
+                case "right":
+                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex + 1];
+                    break;
+                case "bottom":
+                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex + 1, m_fcCurrentCell.LineIndex];
+                    break;
+                case "left":
+                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex - 1];
+                    break;
+                default:
+                    break;
             }
-            set
-            {
-                _lightSensor = value;
-            }
+            return fcResult;
         }
 
-        public bool HasStench
+        public ForestCell getBackCell()
         {
-            get
+            ForestCell fcResult = null;
+            switch (m_sDirectionFacing)
             {
-                return _stenchSensor;
+                case "top":
+                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex + 1, m_fcCurrentCell.LineIndex];
+                    break;
+                case "right":
+                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex - 1];
+                    break;
+                case "bottom":
+                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex - 1, m_fcCurrentCell.LineIndex];
+                    break;
+                case "left":
+                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex + 1];
+                    break;
+                default:
+                    break;
             }
-            set
-            {
-                _stenchSensor = value;
-            }
+            return fcResult;
         }
 
-        public bool HasWind
+        public bool AmIAlive()
         {
-            get
-            {
-                return _windSensor;
-            }
-            set
-            {
-                _windSensor = value;
-            }
+            return m_bStillAlive;
         }
 
-        public void ThrowRock()
+        public void GetEnvironmentState()
         {
-
+            m_bLightDetected = Sensor.HasLight(m_fcCurrentCell);
+            m_bSmellDetected = Sensor.HasSmell(m_fcCurrentCell);
+            m_bWindDetected = Sensor.HasWind(m_fcCurrentCell);
         }
 
-        public void ActivatePortal()
-        {
-
-        }
     }
 }
