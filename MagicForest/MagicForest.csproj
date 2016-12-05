@@ -76,6 +76,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Actuator.cs" />
+    <Compile Include="PossibleAction.cs" />
+    <Compile Include="Sensor.cs" />
     <Page Include="ForestCell.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -125,19 +128,22 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="hole.jpg" />
+    <Resource Include="Ressources\hole.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="danger.jpg" />
+    <Resource Include="Ressources\danger.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="wind.jpg" />
+    <Resource Include="Ressources\wind.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="alien.jpg" />
+    <Resource Include="Ressources\alien.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="hero.png" />
+    <Resource Include="Ressources\hero.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Ressources\gate.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
