@@ -127,5 +127,6 @@ namespace MagicForest
             m_bWindDetected = Sensor.HasWind(m_fcCurrentCell);
         }
 
+        
     }
 }

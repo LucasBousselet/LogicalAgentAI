@@ -54,6 +54,10 @@ namespace MagicForest
             {
                 return m_bHasPortal;
             }
+            set
+            {
+                m_bHasPortal = value;
+            }
         }
 
         public bool HasMonster
@@ -74,6 +78,10 @@ namespace MagicForest
             {
                 return m_bHasHole;
             }
+            set
+            {
+                m_bHasHole = value;
+            }
         }
 
         public bool HasWind
@@ -81,6 +89,10 @@ namespace MagicForest
             get
             {
                 return m_bHasWind;
+            }
+            set
+            {
+                m_bHasWind = value;
             }
         }
 
@@ -102,6 +114,10 @@ namespace MagicForest
             get
             {
                 return m_bHasNothing;
+            }
+            set
+            {
+                m_bHasNothing = value;
             }
         }
 
