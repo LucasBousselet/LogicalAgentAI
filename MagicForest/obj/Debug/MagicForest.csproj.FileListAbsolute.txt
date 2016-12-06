@@ -3,7 +3,6 @@ C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\bin
 C:\Users\NG\Google Drive\Mes documents - pro\UQAC\Intelligence artificielle\Projet 3 - Agent logique\Magic Forest\MagicForest\bin\Debug\MagicForest.exe.config
 C:\Users\Lucas\documents\visual studio 2015\Projects\MagicForest\MagicForest\bin\Debug\MagicForest.exe
 C:\Users\Lucas\documents\visual studio 2015\Projects\MagicForest\MagicForest\bin\Debug\MagicForest.pdb
-C:\Users\Lucas\documents\visual studio 2015\Projects\MagicForest\MagicForest\obj\Debug\MagicForest.csprojResolveAssemblyReference.cache
 C:\Users\Lucas\documents\visual studio 2015\Projects\MagicForest\MagicForest\obj\Debug\ForestCell.g.cs
 C:\Users\Lucas\documents\visual studio 2015\Projects\MagicForest\MagicForest\obj\Debug\MainWindow.g.cs
 C:\Users\Lucas\documents\visual studio 2015\Projects\MagicForest\MagicForest\obj\Debug\App.g.cs
@@ -16,3 +15,4 @@ C:\Users\Lucas\documents\visual studio 2015\Projects\MagicForest\MagicForest\obj
 C:\Users\Lucas\documents\visual studio 2015\Projects\MagicForest\MagicForest\obj\Debug\MagicForest.csproj.GenerateResource.Cache
 C:\Users\Lucas\documents\visual studio 2015\Projects\MagicForest\MagicForest\obj\Debug\MagicForest.exe
 C:\Users\Lucas\documents\visual studio 2015\Projects\MagicForest\MagicForest\obj\Debug\MagicForest.pdb
+C:\Users\Lucas\documents\visual studio 2015\Projects\MagicForest\MagicForest\obj\Debug\MagicForest.csprojResolveAssemblyReference.cache

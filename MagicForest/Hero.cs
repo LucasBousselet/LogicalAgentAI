@@ -66,7 +66,7 @@ namespace MagicForest
         {
             m_sDirectionFacing = m_asPossibleDirections[1];
             m_iScore = 0;
-            m_fcCurrentCell = MainWindow.Forest[0, 0];
+            //m_fcCurrentCell = MainWindow.Forest[0, 0];
         }
 
         public ForestCell getFrontCell()

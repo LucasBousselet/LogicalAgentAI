@@ -23,20 +23,30 @@ namespace MagicForest
         private int m_iLineIndex;
         private int m_iColumnIndex;
 
+        private bool m_bHasHero = false;
         private bool m_bHasPortal = false;
         private bool m_bHasMonster = false;
         private bool m_bHasHole = false;
         private bool m_bHasWind = false;
         private bool m_bHasPoop = false;
-        private bool m_bHasNothing = false;
+        private bool m_bHasNothing = true;
 
         private bool m_bAlreadyVisited = false;
+
+        public ForestCell()
+        {
+            InitializeComponent();
+        }
 
         public int LineIndex
         {
             get
             {
                 return m_iLineIndex;
+            }
+            set
+            {
+                m_iLineIndex = value;
             }
         }
 
@@ -45,6 +55,22 @@ namespace MagicForest
             get
             {
                 return m_iColumnIndex;
+            }
+            set
+            {
+                m_iColumnIndex = value;
+            }
+        }
+
+        public bool HasHero
+        {
+            get
+            {
+                return m_bHasHero;
+            }
+            set
+            {
+                m_bHasHero = value;
             }
         }
 
@@ -135,9 +161,9 @@ namespace MagicForest
 
         public List<ForestCell> getAdjacentCells()
         {
-            List<ForestCell> lfcResult = null;
+            List<ForestCell> lfcResult = new List<ForestCell>();
 
-            if (m_iLineIndex - 1 > 0)
+            if (m_iLineIndex - 1 >= 0)
             {
                 lfcResult.Add(MainWindow.Forest[m_iLineIndex - 1, m_iColumnIndex]);
             }
@@ -145,7 +171,7 @@ namespace MagicForest
             {
                 lfcResult.Add(MainWindow.Forest[m_iLineIndex + 1, m_iColumnIndex]);
             }
-            if (m_iColumnIndex - 1 > 0)
+            if (m_iColumnIndex - 1 >= 0)
             {
                 lfcResult.Add(MainWindow.Forest[m_iLineIndex, m_iColumnIndex - 1]);
             }
@@ -157,9 +183,136 @@ namespace MagicForest
             return lfcResult;
         }
 
-        public ForestCell()
+        /// <summary>
+        /// Adds a monster to the cell, and poops to the neighboring cells
+        /// </summary>
+        public void AddMonsterOnCell()
         {
-            InitializeComponent();
+            List<ForestCell> listOfneighbors = new List<ForestCell>();
+
+            HasMonster = true;
+            HasNothing = false;
+            listOfneighbors = getAdjacentCells();
+            for (int i = 0; i < listOfneighbors.Count(); i++)
+            {
+                if (HasPortal == false)
+                {
+                    listOfneighbors[i].AddPoop();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds a monster image to the cell
+        /// </summary>
+        public void AddMonsterImage()
+        {
+            BitmapImage image = new BitmapImage(new Uri("Ressources/alien.jpg", UriKind.Relative));
+            cellImage.Source = image;
+        }
+
+        /// <summary>
+        /// Adds a "danger" image to the cell
+        /// </summary>
+        public void AddPoop()
+        {
+            HasPoop = true;
+            HasNothing = false;
+        }
+
+        /// <summary>
+        /// Adds a poop image to the cell
+        /// </summary>
+        public void AddPoopImage()
+        {
+            BitmapImage image = new BitmapImage(new Uri("Ressources/danger.jpg", UriKind.Relative));
+            cellImage.Source = image;
+        }
+
+        /// <summary>
+        /// Adds a "hole" to the cell, and winds to the neighboring cells
+        /// </summary>
+        public void AddHoleOnCell()
+        {
+            List<ForestCell> listOfneighbors = new List<ForestCell>();
+
+            HasHole = true;
+            HasNothing = false;
+            listOfneighbors = getAdjacentCells();
+            for (int i = 0; i < listOfneighbors.Count(); i++)
+            {
+                if (HasPortal == false)
+                {
+                    listOfneighbors[i].AddWind();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds a hole image to the cell
+        /// </summary>
+        public void AddHoleImage()
+        {
+            BitmapImage image = new BitmapImage(new Uri("Ressources/hole.jpg", UriKind.Relative));
+            cellImage.Source = image;
+        }
+
+        /// <summary>
+        /// Adds a "wind" image to the cell
+        /// </summary>
+        public void AddWind()
+        {
+            HasWind = true;
+            HasNothing = false;
+        }
+
+        /// <summary>
+        /// Adds a wind image to the cell
+        /// </summary>
+        public void AddWindImage()
+        {
+            BitmapImage image = new BitmapImage(new Uri("Ressources/wind.jpg", UriKind.Relative));
+            cellImage.Source = image;
+        }
+
+        /// <summary>
+        /// Adds a "portal"  to the cell
+        /// </summary>
+        public void AddPortalOnCell()
+        {
+            HasPortal = true;
+            HasNothing = false;
+        }
+
+        /// <summary>
+        /// Adds a portal image to the cell
+        /// </summary>
+        public void AddPortalImage()
+        {
+            BitmapImage image = new BitmapImage(new Uri("Ressources/gate.jpg", UriKind.Relative));
+            cellImage.Source = image;
+        }
+
+        /// <summary>
+        /// Adds a "hero" image to the cell
+        /// </summary>
+        public void AddHeroOnCell()
+        {
+            HasHero = true;
+        }
+
+        public void RemoveHeroFromCell()
+        {
+            HasHero = false;
+        }
+
+        /// <summary>
+        /// Adds a hero image to the cell
+        /// </summary>
+        public void AddHeroImage()
+        {
+            BitmapImage image = new BitmapImage(new Uri("Ressources/hero.png", UriKind.Relative));
+            cellImage.Source = image;
         }
     }
 }
