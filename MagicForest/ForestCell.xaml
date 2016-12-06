@@ -15,24 +15,8 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-
-            <Viewbox Stretch="Uniform" Visibility="Collapsed" >
-                <Image x:Name="windImage" Source="wind.jpg"></Image>
-            </Viewbox>
-            <Viewbox Stretch="Uniform" Visibility="Collapsed">
-                <Image x:Name="dangerImage" Source="danger.jpg"></Image>
-            </Viewbox>
-            <Viewbox Stretch="Uniform" Visibility="Collapsed">
-                <Image x:Name="monsterImage" Source="alien.jpg"></Image>
-            </Viewbox>
-            <Viewbox Stretch="Uniform" Visibility="Collapsed">
-                <Image x:Name="holeImage" Source="hole.jpg"></Image>
-            </Viewbox>
-            <Viewbox Stretch="Uniform" Visibility="Collapsed">
-                <Image x:Name="gateImage" Source="gate.jpg"></Image>
-            </Viewbox>
-            <Viewbox Stretch="Uniform" Visibility="Collapsed">
-                <Image x:Name="heroImage" Source="hero.png"></Image>
+            <Viewbox>
+                <Image x:Name="cellImage"></Image>
             </Viewbox>
         </Grid>
     </Border>
