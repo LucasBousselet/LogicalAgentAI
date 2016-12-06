@@ -316,5 +316,6 @@ namespace MagicForest
             BitmapImage image = new BitmapImage(new Uri("Ressources/hero.png", UriKind.Relative));
             cellImage.Source = image;
         }
+
     }
 }
