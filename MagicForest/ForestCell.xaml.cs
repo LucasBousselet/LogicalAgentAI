@@ -196,6 +196,7 @@ namespace MagicForest
             for (int i = 0; i < listOfneighbors.Count(); i++)
             {
                 if (HasPortal == false)
+                if ((HasPortal == false) && (HasWind == false))
                 {
                     listOfneighbors[i].AddPoop();
                 }
@@ -242,6 +243,7 @@ namespace MagicForest
             for (int i = 0; i < listOfneighbors.Count(); i++)
             {
                 if (HasPortal == false)
+                if ((HasPortal == false) && (HasPoop == false))
                 {
                     listOfneighbors[i].AddWind();
                 }

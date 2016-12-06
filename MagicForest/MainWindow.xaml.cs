@@ -199,7 +199,7 @@ namespace MagicForest
                 }
             }
         }
-
+       // bool flag = true;
         /// <summary>
         /// Randomly puts either a monster, a hole, or nothing on the input cell
         /// Also updates the neighboring cells with either smell or wind accordingly
@@ -210,13 +210,25 @@ namespace MagicForest
             // Generates a random number between 0 (included) and 100 (excluded)
             Random random = new Random();
             int die = random.Next(0,100);
+            
+            //if (flag == true)
+            //{
+            //    die = 10;
+            //    flag = false;
+            //}
+            //else
+            //{
+            //    die = 90;
+            //    flag = true;
+            //}
+
             // There is 15% of chance for the generated number to be in the following range
-            if ((die >= 0) && (die < 50))
+            if ((die >= 0) && (die < 15))
             {
                 pCell.AddMonsterOnCell();
             }
             // There is 15% of chance for the generated number to be in the following range
-            if ((die >= 55) && (die <= 100))
+            if ((die >= 85) && (die <= 100))
             {
                 pCell.AddHoleOnCell();
             }
