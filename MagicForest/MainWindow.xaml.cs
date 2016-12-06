@@ -195,7 +195,6 @@ namespace MagicForest
                     if ((pForest[i, j].HasNothing == true) && !((i == 0) && (j == 0)))
                     {
                         // and try to populate it if it's empty (with a monster or a hole)
-                        PopulateCellRandomly(pForest[i, j]);
                         PopulateCellRandomly(pForest[i, j], random);
                     }
                 }
@@ -207,35 +206,18 @@ namespace MagicForest
         /// Also updates the neighboring cells with either smell or wind accordingly
         /// </summary>
         /// <param name="pCell">The input cell to populate</param>
-        public void PopulateCellRandomly(ForestCell pCell)
         public void PopulateCellRandomly(ForestCell pCell, Random r)
         {
             // Generates a random number between 0 (included) and 100 (excluded)
-<<<<<<< HEAD
-            Random random = new Random();
-            int die = random.Next(0,100);
-            
-            //if (flag == true)
-            //{
-            //    die = 10;
-            //    flag = false;
-            //}
-            //else
-            //{
-            //    die = 90;
-            //    flag = true;
-            //}
-=======
             int die = r.Next(0,100);
->>>>>>> ecdce13fada6936aa778ac8a7023300f519a88f1
 
             // There is 15% of chance for the generated number to be in the following range
-            if ((die >= 0) && (die < 15))
+            if ((die >= 0) && (die < 10))
             {
                 pCell.AddMonsterOnCell();
             }
             // There is 15% of chance for the generated number to be in the following range
-            if ((die >= 85) && (die <= 100))
+            if ((die >= 90) && (die <= 100))
             {
                 pCell.AddHoleOnCell();
             }
