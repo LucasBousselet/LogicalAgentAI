@@ -25,6 +25,7 @@ namespace MagicForest
         private static int m_iForestSize = 3;
         private static ForestCell[,] m_afcForest = null;
         private static Hero steveTheHero = new Hero();
+        private static string m_sWhatsOnTheCell = String.Empty;
 
         public static int ForestSize
         {
@@ -46,6 +47,18 @@ namespace MagicForest
             }
         }
 
+        public static string VerboseCellContent
+        {
+            get
+            {
+                return m_sWhatsOnTheCell;
+            }
+            set
+            {
+                m_sWhatsOnTheCell = value;
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -53,21 +66,59 @@ namespace MagicForest
             PopulateForest(m_afcForest);
             CreateGUI();
             ShowForestCellsInGUI();
+            EditTextDetails();
             Content = mainGrid;
         }
 
+        /// <summary>
+        /// Inference cycle that is performed at every click
+        /// Makes the decision to undertake an action (move, throw a rock or step into the portal)
+        /// </summary>
         public void Inference()
         {
             CreateForest();
             PopulateForest(m_afcForest);
             CreateGUI();
             ShowForestCellsInGUI();
+            EditTextDetails();
             Content = mainGrid;
         }
 
         public void IncreaseForestSize()
         {
             m_iForestSize++;
+        }
+        
+        public void EditTextDetails()
+        {
+            // Initializes the text containing the cell's details (monster, smell, etc ...)
+            VerboseCellContent = "";
+            ForestCell currentCell = steveTheHero.CurrentCell;
+            if (currentCell.HasNothing)
+            {
+                VerboseCellContent = String.Concat(VerboseCellContent, "- rien de particulier\n");
+            }
+            if (currentCell.HasHole)
+            {
+                VerboseCellContent = String.Concat(VerboseCellContent, "- un trou ... Damned ...\n");
+            }
+            if (currentCell.HasMonster)
+            {
+                VerboseCellContent = String.Concat(VerboseCellContent, "- un alien ... Game Over\n");
+            }
+            if (currentCell.HasWind)
+            {
+                VerboseCellContent = String.Concat(VerboseCellContent, "- un brusque coup de vent\n");
+            }
+            if (currentCell.HasPoop)
+            {
+                VerboseCellContent = String.Concat(VerboseCellContent, "- une odeur étrange\n");
+            }
+            if (currentCell.HasPortal)
+            {
+                VerboseCellContent = String.Concat(VerboseCellContent, "- une douce lumière\n");
+            }
+            currentCellText.Text = VerboseCellContent;
         }
 
         /// <summary>
@@ -107,39 +158,48 @@ namespace MagicForest
         /// </summary>
         public void ShowForestCellsInGUI()
         {
+            // Initializes the string which details what's on the cell
             for (int i = 0; i < m_iForestSize; i++)
             {
                 for (int j = 0; j < m_iForestSize; j++)
                 {
+                    // If the current cell has ...
+                    // ... a hero 
                     if (m_afcForest[i, j].HasHero)
                     {
                         m_afcForest[i, j].AddHeroImage();
                         continue;
                     }
+                    // ... nothing
                     if ((m_afcForest[i,j].HasNothing) && !(m_afcForest[i, j].HasHero))
                     {
                         continue;
                     }
+                    // ... a portal and no hero
                     if ((m_afcForest[i, j].HasPortal) && !(m_afcForest[i, j].HasHero))
                     {
                         m_afcForest[i, j].AddPortalImage();
                         continue;
                     }
+                    // ... a hole and no hero
                     if ((m_afcForest[i, j].HasHole) && !(m_afcForest[i, j].HasHero))
                     {
                         m_afcForest[i, j].AddHoleImage();
                         continue;
                     }
+                    // ... wind and no hero
                     if ((m_afcForest[i, j].HasWind) && !(m_afcForest[i, j].HasHero))
                     {
                         m_afcForest[i, j].AddWindImage();
                         continue;
                     }
+                    // ... a monster and no hero
                     if ((m_afcForest[i, j].HasMonster) && !(m_afcForest[i, j].HasHero))
                     {
                         m_afcForest[i, j].AddMonsterImage();
                         continue;
                     }
+                    // ... poop and no hero
                     if ((m_afcForest[i, j].HasPoop) && !(m_afcForest[i, j].HasHero))
                     {
                         m_afcForest[i, j].AddPoopImage();
