@@ -6,9 +6,134 @@ using System.Threading.Tasks;
 
 namespace MagicForest
 {
-    class PossibleAction
+    public abstract class PossibleAction
     {
+        private string m_sName;
+        protected Hero m_hHero;
 
+        public PossibleAction(Hero p_hHero)
+        {
+            m_hHero = p_hHero;
+        }
 
+        public abstract string Name();
+
+        public abstract void Act();
+    }
+
+    /*
+    public class TurnLeft : PossibleAction
+    {
+        private string m_sName = "TurnLeft";
+
+        public override string Name()
+        {
+            return m_sName;
+        }
+
+        public TurnLeft(Hero p_hHero) : base(p_hHero)
+        {
+        }
+
+        public override void Act()
+        {
+            Actuator.TurnLelf(m_hHero);
+        }
+    }
+
+    public class TurnRight : PossibleAction
+    {
+        private string m_sName = "TurnRight";
+
+        public override string Name()
+        {
+            return m_sName;
+        }
+
+        public TurnRight(Hero p_hHero) : base(p_hHero)
+        {
+        }
+
+        public override void Act()
+        {
+            Actuator.TurnRight(m_hHero);
+        }
+    }
+    */
+
+    public class GoBackward : PossibleAction
+    {
+        private string m_sName = "GoBackward";
+
+        public override string Name()
+        {
+            return m_sName;
+        }
+
+        public GoBackward(Hero p_hHero) : base(p_hHero)
+        {
+        }
+
+        public override void Act()
+        {
+            Actuator.GoBackward(m_hHero);
+        }
+    }
+
+    public class GoForward : PossibleAction
+    {
+        private string m_sName = "GoForward";
+
+        public override string Name()
+        {
+            return m_sName;
+        }
+
+        public GoForward(Hero p_hHero) : base(p_hHero)
+        {
+        }
+
+        public override void Act()
+        {
+            Actuator.GoForward(m_hHero);
+        }
+    }
+
+    public class ThrowRock : PossibleAction
+    {
+        private string m_sName = "ThrowRock";
+
+        public override string Name()
+        {
+            return m_sName;
+        }
+
+        public ThrowRock(Hero p_hHero) : base(p_hHero)
+        {
+        }
+
+        public override void Act()
+        {
+            Actuator.ThrowRock(m_hHero);
+        }
+    }
+
+    public class Exit : PossibleAction
+    {
+        private string m_sName = "Exit";
+
+        public override string Name()
+        {
+            return m_sName;
+        }
+
+        public Exit(Hero p_hHero) : base(p_hHero)
+        {
+        }
+
+        public override void Act()
+        {
+            Actuator.Exit(m_hHero);
+        }
     }
 }
