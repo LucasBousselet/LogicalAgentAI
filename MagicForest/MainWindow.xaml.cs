@@ -173,6 +173,7 @@ namespace MagicForest
                     // ... nothing
                     if ((m_afcForest[i,j].HasNothing) && !(m_afcForest[i, j].HasHero))
                     {
+                        m_afcForest[i, j].RemoveImage();
                         continue;
                     }
                     // ... a portal and no hero

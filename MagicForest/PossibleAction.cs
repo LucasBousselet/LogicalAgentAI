@@ -61,7 +61,7 @@ namespace MagicForest
     }
     */
 
-    public class GoBackward : PossibleAction
+    /*public class GoBackward : PossibleAction
     {
         private string m_sName = "GoBackward";
 
@@ -97,24 +97,49 @@ namespace MagicForest
         {
             Actuator.GoForward(m_hHero);
         }
-    }
+    }*/
 
-    public class ThrowRock : PossibleAction
+    public class Move : PossibleAction
     {
-        private string m_sName = "ThrowRock";
+        private string m_sName = "Move";
+
+        private ForestCell m_fcDestination;
+
+        public Move(Hero p_hHero, ForestCell p_fcDestinationCell) : base(p_hHero)
+        {
+            m_fcDestination = p_fcDestinationCell;
+        }
 
         public override string Name()
         {
             return m_sName;
         }
 
-        public ThrowRock(Hero p_hHero) : base(p_hHero)
+        public override void Act()
         {
+            Actuator.Move(m_hHero, m_fcDestination);
+        }
+    }
+
+    public class ThrowRock : PossibleAction
+    {
+        private string m_sName = "ThrowRock";
+
+        private string m_sDirection;
+
+        public override string Name()
+        {
+            return m_sName;
+        }
+
+        public ThrowRock(Hero p_hHero, string p_sDirection) : base(p_hHero)
+        {
+            m_sDirection = p_sDirection;
         }
 
         public override void Act()
         {
-            Actuator.ThrowRock(m_hHero);
+            Actuator.ThrowRock(m_hHero, m_sDirection);
         }
     }
 
