@@ -1,18 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MagicForest
 {
@@ -68,6 +56,9 @@ namespace MagicForest
             ShowForestCellsInGUI();
             EditTextDetails();
             Content = mainGrid;
+
+            Actuator.OnExit += new Actuator.dlgExit(OnExit);
+            Hero.OnDeath += new Hero.dlgDeath(OnDeath);
         }
 
         /// <summary>
@@ -88,7 +79,7 @@ namespace MagicForest
         {
             m_iForestSize++;
         }
-        
+
         public void EditTextDetails()
         {
             // Initializes the text containing the cell's details (monster, smell, etc ...)
@@ -171,7 +162,7 @@ namespace MagicForest
                         continue;
                     }
                     // ... nothing
-                    if ((m_afcForest[i,j].HasNothing) && !(m_afcForest[i, j].HasHero))
+                    if ((m_afcForest[i, j].HasNothing) && !(m_afcForest[i, j].HasHero))
                     {
                         m_afcForest[i, j].RemoveImage();
                         continue;
@@ -218,7 +209,7 @@ namespace MagicForest
             // Nullify the current instances of the objects
             m_afcForest = null;
             m_afcForest = new ForestCell[m_iForestSize, m_iForestSize];
-            
+
             // For every cell we want, we create a new ForestCell
             // and we address it to the ForestCell matrix
             for (int i = 0; i < m_iForestSize; i++)
@@ -261,7 +252,7 @@ namespace MagicForest
                 }
             }
         }
-       
+
         /// <summary>
         /// Randomly puts either a monster, a hole, or nothing on the input cell
         /// Also updates the neighboring cells with either smell or wind accordingly
@@ -270,7 +261,7 @@ namespace MagicForest
         public void PopulateCellRandomly(ForestCell pCell, Random r)
         {
             // Generates a random number between 0 (included) and 100 (excluded)
-            int die = r.Next(0,100);
+            int die = r.Next(0, 100);
 
             // There is 15% of chance for the generated number to be in the following range
             if ((die >= 0) && (die < 10))
@@ -284,9 +275,19 @@ namespace MagicForest
             }
         }
 
-        public static void StopExecution()
+        public void OnExit()
         {
-            // STOP EXECUTION : griser bouton + messagebox
+
+
+
+            steveTheHero.CurrentCell = MainWindow.Forest[0, 0];
+        }
+
+        public static void OnDeath()
+        {
+
+
+            steveTheHero.CurrentCell = MainWindow.Forest[0, 0];
         }
 
         private void On_DoStuffButtonClick(object sender, RoutedEventArgs e)

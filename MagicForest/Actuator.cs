@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicForest
 {
@@ -43,12 +40,15 @@ namespace MagicForest
         {
             CalculateHCost(p_fcDestinationCell);
             int cost = 1/*CalculateCost(p_hHero.CurrentCell, p_fcDestinationCell)*/;
+
+            p_hHero.PreviousCell = p_hHero.CurrentCell;
             p_hHero.CurrentCell = p_fcDestinationCell;
             p_hHero.CurrentCell.AlreadyVisited = true;
             p_hHero.Score -= cost;
             ResetGridCost();
         }
 
+        /*************************************************/
 
         public static void CalculateHCost(ForestCell p_fcDestinationCell)
         {
@@ -70,6 +70,7 @@ namespace MagicForest
                     MainWindow.Forest[i, j].H = 0;
                     MainWindow.Forest[i, j].F = 0;
                     MainWindow.Forest[i, j].G = 0;
+                    MainWindow.Forest[i, j].ParentCell = null;
                 }
             }
         }
@@ -90,19 +91,25 @@ namespace MagicForest
                     double gTemp = p_fcCell.G++;
                     if (gTemp < fcItem.G)
                     {
-                        //node.ParentNode = fromNode;
+                        fcItem.ParentCell = p_fcCell;
                         fcResult.Add(fcItem);
                     }
                     //fcResult.Add(fcItem);
+                }
+                else
+                {
+                    fcItem.ParentCell = p_fcCell;
+                    fcItem.Closed = false;
+                    fcResult.Add(fcItem);
                 }
             }
             return fcResult;
         }
 
-        private static bool Search(Hero p_hHero, ForestCell p_fcCell, ForestCell p_fcDestinationCell)
+        private static bool Search(Hero p_hHero, ForestCell p_fcStartingCell, ForestCell p_fcDestinationCell)
         {
-            p_fcCell.Closed = true;
-            List<ForestCell> nextCells = GetAdjacentSafeCells(p_hHero, p_fcCell);
+            p_fcStartingCell.Closed = true;
+            List<ForestCell> nextCells = GetAdjacentSafeCells(p_hHero, p_fcStartingCell);
             nextCells.Sort((node1, node2) => node1.F.CompareTo(node2.F));
             foreach (ForestCell nextCell in nextCells)
             {
@@ -119,6 +126,24 @@ namespace MagicForest
             return false;
         }
 
+        public static List<ForestCell> FindPath(Hero p_hHero, ForestCell p_fcDestinationCell)
+        {
+            List<ForestCell> path = new List<ForestCell>();
+            bool success = Search(p_hHero, p_hHero.CurrentCell, p_fcDestinationCell);
+            if (success)
+            {
+                ForestCell node = p_fcDestinationCell;
+                while (node.ParentCell != null)
+                {
+                    path.Add(node);
+                    node = node.ParentCell;
+                }
+                path.Reverse();
+            }
+            return path;
+        }
+
+        /*************************************************/
 
         public static void ThrowRockLeft(Hero p_hHero)
         {
@@ -129,6 +154,7 @@ namespace MagicForest
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].MayContainMonster = -1;
+                p_hHero.CellsOK.Add(p_fcTarget);
                 p_hHero.Score -= 10;
             }
         }
@@ -172,9 +198,16 @@ namespace MagicForest
             }
         }
 
+        // New delegate event for exit (portal found)
+        public delegate void dlgExit();
+        public static dlgExit OnExit;
+
         public static void Exit(Hero p_hHero)
         {
-            //TODO...
+            if (OnExit != null)
+            {
+                OnExit();
+            }
         }
 
     }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MagicForest
+﻿namespace MagicForest
 {
     public abstract class PossibleAction
     {
@@ -97,7 +91,8 @@ namespace MagicForest
         {
             Actuator.GoForward(m_hHero);
         }
-    }*/
+    }
+    */
 
     public class Move : PossibleAction
     {

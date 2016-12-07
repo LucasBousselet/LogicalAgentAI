@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicForest
 {
@@ -12,6 +10,8 @@ namespace MagicForest
         public readonly string[] m_asPossibleDirections = new string[4] { "top", "right", "bottom", "left" };
         private int m_iScore;
         private ForestCell m_fcCurrentCell;
+        private ForestCell m_fcPreviousCell;
+
         private bool m_bStillAlive = true;
 
         private bool m_bNothing = false;
@@ -32,6 +32,18 @@ namespace MagicForest
         /// 2-dimensional array of the knowledge our hero has of the current environment
         /// </summary>
         private static MemoryCell[,] m_lmcMemory = null;
+
+        public ForestCell PreviousCell
+        {
+            get
+            {
+                return m_fcPreviousCell;
+            }
+            set
+            {
+                m_fcPreviousCell = value;
+            }
+        }
 
         public List<ForestCell> CellsOK
         {
@@ -90,15 +102,6 @@ namespace MagicForest
             set
             {
                 m_fcCurrentCell = value;
-                // UPDATE SPRITE EMPLACEMENT
-            }
-        }
-
-        public bool StillAlive
-        {
-            set
-            {
-                MainWindow.StopExecution();
             }
         }
 
@@ -106,7 +109,7 @@ namespace MagicForest
         {
             m_sDirectionFacing = m_asPossibleDirections[1];
             m_iScore = 0;
-            //m_fcCurrentCell = MainWindow.Forest[0, 0];
+            m_fcCurrentCell = MainWindow.Forest[0, 0];
         }
 
         /// <summary>
@@ -190,6 +193,13 @@ namespace MagicForest
 
             if (m_bNothing)
             {
+                // Remove from list of cells with smell
+                if (m_lfcCellsWithSmell.Contains(CurrentCell))
+                {
+                    m_lfcCellsWithSmell.Remove(CurrentCell);
+                }
+
+                // Update Cell with knowledge that it's empty
                 List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
                 foreach (MemoryCell mcItem in MemoryCells)
                 {
@@ -209,7 +219,7 @@ namespace MagicForest
                 iResultState = 0;
             }
 
-            if (m_bSmellDetected == true && m_bWindDetected == false)
+            if (m_bSmellDetected && !m_bWindDetected && !m_bLightDetected)
             {
                 // Add cell to radList
                 m_lfcCellsWithSmell.Add(m_fcCurrentCell);
@@ -218,18 +228,25 @@ namespace MagicForest
                 List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
                 foreach (MemoryCell mcItem in MemoryCells)
                 {
+                    /*if (mcItem.HasNoMonster == 1)
+                    {
+                        MemoryCells.Remove(mcItem);
+                    }*/
                     // Check in neighboor cell isn't already ok
+                    List<ForestCell> fc = m_fcCurrentCell.getAdjacentCells();
+                    m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
+
                     foreach (ForestCell fcItem in m_lfcCellsOK)
                     {
                         if (mcItem.LineIndex == fcItem.LineIndex && mcItem.ColumnIndex == fcItem.ColumnIndex)
                         {
                             MemoryCells.Remove(mcItem);
+                            fc.Remove(fcItem);
                         }
                     }
 
-                    // Add ramaining cells to suspicious cells
-                    m_lfcCellsSuspicous.AddRange(m_fcCurrentCell.getAdjacentCells());
-                    m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
+                    // Add cells to suspicious cells
+                    //m_lfcCellsSuspicous.AddRange(m_fcCurrentCell.getAdjacentCells());
 
                     // Update memory cells
                     mcItem.MayContainMonster = 1;
@@ -242,7 +259,7 @@ namespace MagicForest
 
                 iResultState = 1;
             }
-            if (m_bWindDetected == true && m_bSmellDetected == false)
+            if (m_bWindDetected == true && !m_bSmellDetected && !m_bLightDetected)
             {
                 // Get the neighboor cells from current cell
                 List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
@@ -272,7 +289,7 @@ namespace MagicForest
 
                 iResultState = 2;
             }
-            if (m_bWindDetected == true && m_bSmellDetected == true)
+            if (m_bWindDetected == true && m_bSmellDetected == true && !m_bLightDetected)
             {
                 // Get the neighboor cells from current cell
                 List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
@@ -301,7 +318,7 @@ namespace MagicForest
 
                 iResultState = 3;
             }
-            if (m_bLightDetected)
+            if (m_bLightDetected && !m_bWindDetected && !m_bSmellDetected)
             {
                 iResultState = 4;
             }
@@ -325,54 +342,198 @@ namespace MagicForest
             GoBackward apActToGoBackward = new GoBackward(this);
             GoForward apActToGoForward = new GoForward(this);
             */
-            Move paActToMove = new Move(this);
+            //Move paActToMove = new Move(this);
             ThrowRockLeft paActToThrowRockLeft = new ThrowRockLeft(this);
             ThrowRockRight paActToThrowRockRight = new ThrowRockRight(this);
             ThrowRockTop paActToThrowRockTop = new ThrowRockTop(this);
             ThrowRockBottom paActToThrowRockBottom = new ThrowRockBottom(this);
-            Exit apActToExit = new Exit(this);
+            Exit paActToExit = new Exit(this);
 
             List<PossibleAction> aListActionPossible = new List<PossibleAction>();
 
             // Empty cell
-            if (p_iStateEnv == 0)
+            if (p_iStateEnv == 0 || p_iStateEnv == 2)
             {
-
+                // If there are some remaining safe cells, move there
+                if (m_lfcCellsOK.Any())
+                {
+                    ForestCell fcNextCell;
+                    foreach (ForestCell fcItem in m_lfcCellsOK)
+                    {
+                        if (!fcItem.AlreadyVisited)
+                        {
+                            Move paActToMove = new Move(this, fcItem);
+                            aListActionPossible.Add(paActToMove);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    // Else go to a cell with smell to kill monster
+                    if (m_lfcCellsWithSmell.Any())
+                    {
+                        ForestCell fcNextCell = m_lfcCellsWithSmell[0];
+                        Move paActToMove = new Move(this, fcNextCell);
+                        aListActionPossible.Add(paActToMove);
+                    }
+                    else
+                    {
+                        // Else try a random remaining cell
+                        if (m_lfcCellsSuspicous.Any())
+                        {
+                            ForestCell fcNextCell = m_lfcCellsSuspicous[0];
+                            Move paActToMove = new Move(this, fcNextCell);
+                            aListActionPossible.Add(paActToMove);
+                        }
+                    }
+                }
             }
             // Smell
             if (p_iStateEnv == 1)
             {
+                // If there are some remaining safe cells, move there
+                if (m_lfcCellsOK.Any())
+                {
+                    ForestCell fcNextCell;
+                    foreach (ForestCell fcItem in m_lfcCellsOK)
+                    {
+                        if (!fcItem.AlreadyVisited)
+                        {
+                            Move paActToMove = new Move(this, fcItem);
+                            aListActionPossible.Add(paActToMove);
+                            break;
+                        }
+                    }
+                }
+                // Else try to kill monster
+                else
+                {
+                    List<ForestCell> lfcTargets = CurrentCell.getAdjacentCells();
+                    // Remove cell visited just before from targets
+                    foreach (ForestCell fcItem in lfcTargets)
+                    {
+                        if (Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster == 1)
+                        {
+                            lfcTargets.Remove(fcItem);
+                        }
+                    }
 
+                    // Randomly choose target from remaining cells
+                    Random r = new Random();
+                    int iTargetIndex = r.Next(0, lfcTargets.Count);
+
+                    if (lfcTargets[iTargetIndex].LineIndex < m_fcCurrentCell.LineIndex)
+                    {
+                        aListActionPossible.Add(paActToThrowRockLeft);
+                    }
+                    if (lfcTargets[iTargetIndex].LineIndex > m_fcCurrentCell.LineIndex)
+                    {
+                        aListActionPossible.Add(paActToThrowRockRight);
+                    }
+                    if (lfcTargets[iTargetIndex].LineIndex < m_fcCurrentCell.ColumnIndex)
+                    {
+                        aListActionPossible.Add(paActToThrowRockTop);
+                    }
+                    if (lfcTargets[iTargetIndex].LineIndex > m_fcCurrentCell.ColumnIndex)
+                    {
+                        aListActionPossible.Add(paActToThrowRockBottom);
+                    }
+                    Move paActToMove = new Move(this, lfcTargets[iTargetIndex]);
+                    //aListActionPossible.Add(paActToMove);
+                }
             }
             // Wind
-            if (p_iStateEnv == 2)
+            /*if (p_iStateEnv == 2)
             {
 
-            }
+            }*/
             // Smell + Wind
             if (p_iStateEnv == 3)
             {
+                // If there are some remaining safe cells, move there
+                if (m_lfcCellsOK.Any())
+                {
+                    ForestCell fcNextCell;
+                    foreach (ForestCell fcItem in m_lfcCellsOK)
+                    {
+                        if (!fcItem.AlreadyVisited)
+                        {
+                            Move paActToMove = new Move(this, fcItem);
+                            aListActionPossible.Add(paActToMove);
+                            break;
+                        }
+                    }
+                }
+                // Else try to kill monster and wait for result
+                else
+                {
+                    List<ForestCell> lfcTargets = CurrentCell.getAdjacentCells();
+                    // Remove cell visited just before from targets
+                    foreach (ForestCell fcItem in lfcTargets)
+                    {
+                        if (Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster == 1)
+                        {
+                            lfcTargets.Remove(fcItem);
+                        }
+                    }
+                    // if no more target, try random cell
+                    if (!lfcTargets.Any())
+                    {
+                        ForestCell fcNextCell = m_lfcCellsSuspicous[0];
+                        Move paActToMove = new Move(this, fcNextCell);
+                        aListActionPossible.Add(paActToMove);
+                    }
+                    else
+                    {
+                        // Randomly choose target from remaining cells
+                        Random r = new Random();
+                        int iTargetIndex = r.Next(0, lfcTargets.Count);
 
+                        if (lfcTargets[iTargetIndex].LineIndex < m_fcCurrentCell.LineIndex)
+                        {
+                            aListActionPossible.Add(paActToThrowRockLeft);
+                        }
+                        if (lfcTargets[iTargetIndex].LineIndex > m_fcCurrentCell.LineIndex)
+                        {
+                            aListActionPossible.Add(paActToThrowRockRight);
+                        }
+                        if (lfcTargets[iTargetIndex].LineIndex < m_fcCurrentCell.ColumnIndex)
+                        {
+                            aListActionPossible.Add(paActToThrowRockTop);
+                        }
+                        if (lfcTargets[iTargetIndex].LineIndex > m_fcCurrentCell.ColumnIndex)
+                        {
+                            aListActionPossible.Add(paActToThrowRockBottom);
+                        }
+                    }
+                }
             }
             // Light
             if (p_iStateEnv == 4)
             {
-                aListActionPossible.Add(paActToMove);
-                // GET OUT !!!
+                // GET OUT !
+                aListActionPossible.Add(paActToExit);
             }
             // Monster
             if (p_iStateEnv == 5)
             {
                 m_bStillAlive = false;
+                OnDeath();
             }
             // Hole
             if (p_iStateEnv == 5)
             {
                 m_bStillAlive = false;
+                OnDeath();
             }
 
             return aListActionPossible;
         }
+
+        // New delegate for player death
+        public delegate void dlgDeath();
+        public static dlgDeath OnDeath;
 
         /// <summary>
         /// 
@@ -437,10 +598,6 @@ namespace MagicForest
                     {
                         iWorthiness = 0;
                     }
-                    if (p_paAction.Name() == "Exit")
-                    {
-                        iWorthiness = 0;
-                    }
                     break;
                 // Smell
                 case 1:
@@ -464,10 +621,6 @@ namespace MagicForest
                     {
                         iWorthiness = 1;
                     }
-                    if (p_paAction.Name() == "Exit")
-                    {
-                        iWorthiness = 0;
-                    }
                     break;
                 // Wind
                 case 2:
@@ -488,10 +641,6 @@ namespace MagicForest
                         iWorthiness = 0;
                     }
                     if (p_paAction.Name() == "ThrowRockBottom")
-                    {
-                        iWorthiness = 0;
-                    }
-                    if (p_paAction.Name() == "Exit")
                     {
                         iWorthiness = 0;
                     }
