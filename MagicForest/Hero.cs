@@ -132,25 +132,29 @@ namespace MagicForest
         {
             int iResultState = 0;
 
-            if (m_bSmellDetected == true)
+            if (m_bSmellDetected == true && m_bWindDetected == false)
             {
                 iResultState = 1;
             }
-            if (m_bWindDetected == true)
+            if (m_bWindDetected == true && m_bSmellDetected == false)
             {
                 iResultState = 2;
             }
-            if (m_bLightDetected == true)
+            if (m_bWindDetected == true && m_bSmellDetected == true)
             {
                 iResultState = 3;
             }
-            if (m_fcCurrentCell.HasMonster == true)
+            if (m_bLightDetected == true)
             {
                 iResultState = 4;
             }
-            if (m_fcCurrentCell.HasHole == true)
+            if (m_fcCurrentCell.HasMonster == true)
             {
                 iResultState = 5;
+            }
+            if (m_fcCurrentCell.HasHole == true)
+            {
+                iResultState = 6;
             }
 
             return iResultState;
@@ -170,34 +174,37 @@ namespace MagicForest
             // Empty cell
             if (p_iStateEnv == 0)
             {
-                
+
             }
             // Smell
             if (p_iStateEnv == 1)
             {
-                
+
             }
             // Wind
             if (p_iStateEnv == 2)
             {
-                
+
             }
-            // Light
+            // Smell + Wind
             if (p_iStateEnv == 3)
             {
-                
+
             }
-            // Monster
+            // Light
             if (p_iStateEnv == 4)
             {
+
+            }
+            // Monster
+            if (p_iStateEnv == 5)
+            {
                 m_bStillAlive = false;
-                MainWindow.StopExecution();
             }
             // Hole
             if (p_iStateEnv == 5)
             {
                 m_bStillAlive = false;
-                MainWindow.StopExecution();
             }
 
             return aListActionPossible;
