@@ -33,7 +33,6 @@ namespace MagicForest
         /// </summary>
         private static MemoryOfCell[,] m_lmcMemoryCells = null;
 
-        public MemoryOfCell[,] ForestOfMemoryCells
         public static MemoryOfCell[,] MatrixOfMemoryCells
         {
             get
@@ -335,9 +334,7 @@ namespace MagicForest
             // Light
             if (p_iStateEnv == 4)
             {
-
                 // GET OUT !!!
-
             }
             // Monster
             if (p_iStateEnv == 5)
