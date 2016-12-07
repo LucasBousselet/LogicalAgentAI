@@ -21,7 +21,7 @@ namespace MagicForest
 
         private string m_sGoal = "GETOUTOMG!";
 
-        private MemoryOfCell m_mcCurrentMemoryCell;
+        private MemoryCell m_mcCurrentMemoryCell;
 
         private List<ForestCell> m_lfcCellsOK;
         private List<ForestCell> m_lfcCellsSuspicous;
@@ -31,15 +31,16 @@ namespace MagicForest
         /// <summary>
         /// 2-dimensional array of the knowledge our hero has of the current environment
         /// </summary>
-        private static MemoryOfCell[,] m_lmcMemoryCells = null;
+        private static MemoryCell[,] m_lmcMemory = null;
 
-        public static MemoryOfCell[,] MatrixOfMemoryCells
+        public static MemoryCell[,] Memory
         {
             get
             {
-                return m_lmcMemoryCells;
+                return m_lmcMemory;
             }
         }
+
         public string DirectionFacing
         {
             get
@@ -101,9 +102,9 @@ namespace MagicForest
             {
                 for (int j = 0; j < m_iMemorySize; j++)
                 {
-                    MatrixOfMemoryCells[i, j] = new MemoryOfCell();
-                    MatrixOfMemoryCells[i, j].m_iLineIndex = i;
-                    MatrixOfMemoryCells[i, j].m_iColumnIndex = j;
+                    Memory[i, j] = new MemoryCell();
+                    Memory[i, j].LineIndex = i;
+                    Memory[i, j].ColumnIndex = j;
                 }
             }
         }
@@ -169,12 +170,12 @@ namespace MagicForest
 
         public int UpdateMyState()
         {
-            int iResultState;
+            int iResultState = -1;
 
             if (m_bNothing)
             {
-                List<MemoryOfCell> MemoryCells = m_lmcMemoryCells[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentCells();
-                foreach (MemoryOfCell mcItem in MemoryCells)
+                List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
+                foreach (MemoryCell mcItem in MemoryCells)
                 {
                     m_lfcCellsOK.AddRange(m_fcCurrentCell.getAdjacentCells());
                     // Remove duplicates
@@ -198,8 +199,8 @@ namespace MagicForest
                 m_lfcCellsWithSmell.Add(m_fcCurrentCell);
 
                 // Get the neighboor cells from current cell
-                List<MemoryOfCell> MemoryCells = m_lmcMemoryCells[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentCells();
-                foreach (MemoryOfCell mcItem in MemoryCells)
+                List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
+                foreach (MemoryCell mcItem in MemoryCells)
                 {
                     // Check in neighboor cell isn't already ok
                     foreach (ForestCell fcItem in m_lfcCellsOK)
@@ -228,8 +229,8 @@ namespace MagicForest
             if (m_bWindDetected == true && m_bSmellDetected == false)
             {
                 // Get the neighboor cells from current cell
-                List<MemoryOfCell> MemoryCells = m_lmcMemoryCells[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentCells();
-                foreach (MemoryOfCell mcItem in MemoryCells)
+                List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
+                foreach (MemoryCell mcItem in MemoryCells)
                 {
                     // Check in neighboor cell isn't already ok
                     foreach (ForestCell fcItem in m_lfcCellsOK)
@@ -258,8 +259,8 @@ namespace MagicForest
             if (m_bWindDetected == true && m_bSmellDetected == true)
             {
                 // Get the neighboor cells from current cell
-                List<MemoryOfCell> MemoryCells = m_lmcMemoryCells[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentCells();
-                foreach (MemoryOfCell mcItem in MemoryCells)
+                List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
+                foreach (MemoryCell mcItem in MemoryCells)
                 {
                     // Check in neighboor cell isn't already ok
                     foreach (ForestCell fcItem in m_lfcCellsOK)
@@ -319,17 +320,17 @@ namespace MagicForest
             // Smell
             if (p_iStateEnv == 1)
             {
-                
+
             }
             // Wind
             if (p_iStateEnv == 2)
             {
-                
+
             }
             // Smell + Wind
             if (p_iStateEnv == 3)
             {
-                
+
             }
             // Light
             if (p_iStateEnv == 4)

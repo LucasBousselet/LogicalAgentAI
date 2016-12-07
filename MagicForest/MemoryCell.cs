@@ -6,13 +6,40 @@ using System.Threading.Tasks;
 
 namespace MagicForest
 {
-    public class MemoryOfCell
+    public class MemoryCell
     {
+        private int m_iLineIndex;
+        private int m_iColumnIndex;
+
         /* for all integers :
          * -1 -> false
          * 1 -> true
          * 0 -> unknown */
         private int m_iIsSafe, m_iMayContainMonster, m_iMayContainHole, m_iContainMonster, m_iContainHole, m_iHasNoMonster, m_iHasNoHole = 0;
+
+        public int LineIndex
+        {
+            get
+            {
+                return m_iLineIndex;
+            }
+            set
+            {
+                m_iLineIndex = value;
+            }
+        }
+
+        public int ColumnIndex
+        {
+            get
+            {
+                return m_iColumnIndex;
+            }
+            set
+            {
+                m_iColumnIndex = value;
+            }
+        }
 
         public int IsSafe
         {
@@ -98,38 +125,35 @@ namespace MagicForest
             }
         }
 
-        public int m_iLineIndex;
-        public int m_iColumnIndex;
-
         /// <summary>
         /// Find the MemoryCells directly on the left/right/up/down of the current cell
         /// </summary>
         /// <returns>A list of the cells (up to 4) neighbors of the current cell</returns>
-        public List<MemoryOfCell> getAdjacentMemoryCells()
+        public List<MemoryCell> getAdjacentMemoryCells()
         {
-            List<MemoryOfCell> lmcResult = new List<MemoryOfCell>();
+            List<MemoryCell> lmcResult = new List<MemoryCell>();
 
             if (m_iLineIndex - 1 >= 0)
             {
-                lmcResult.Add(Hero.MatrixOfMemoryCells[m_iLineIndex - 1, m_iColumnIndex]);
+                lmcResult.Add(Hero.Memory[m_iLineIndex - 1, m_iColumnIndex]);
             }
             if (m_iLineIndex + 1 < MainWindow.ForestSize)
             {
-                lmcResult.Add(Hero.MatrixOfMemoryCells[m_iLineIndex + 1, m_iColumnIndex]);
+                lmcResult.Add(Hero.Memory[m_iLineIndex + 1, m_iColumnIndex]);
             }
             if (m_iColumnIndex - 1 >= 0)
             {
-                lmcResult.Add(Hero.MatrixOfMemoryCells[m_iLineIndex, m_iColumnIndex - 1]);
+                lmcResult.Add(Hero.Memory[m_iLineIndex, m_iColumnIndex - 1]);
             }
             if (m_iColumnIndex + 1 < MainWindow.ForestSize)
             {
-                lmcResult.Add(Hero.MatrixOfMemoryCells[m_iLineIndex, m_iColumnIndex + 1]);
+                lmcResult.Add(Hero.Memory[m_iLineIndex, m_iColumnIndex + 1]);
             }
 
             return lmcResult;
         }
 
-        public MemoryOfCell()
+        public MemoryCell()
         {
         }
     }
