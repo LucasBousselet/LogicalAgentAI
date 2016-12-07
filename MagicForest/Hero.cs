@@ -33,6 +33,22 @@ namespace MagicForest
         /// </summary>
         private static MemoryCell[,] m_lmcMemory = null;
 
+        public List<ForestCell> CellsOK
+        {
+            get
+            {
+                return m_lfcCellsOK;
+            }
+        }
+
+        public List<ForestCell> CellsSuspicous
+        {
+            get
+            {
+                return m_lfcCellsSuspicous;
+            }
+        }
+
         public static MemoryCell[,] Memory
         {
             get
