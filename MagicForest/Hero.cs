@@ -750,7 +750,17 @@ namespace MagicForest
         /// </summary>
         public void Inference()
         {
-            // TODO
+            while (AmIAlive())
+            {
+                /* The function call execute the BDI model.
+                 * - First we call GetEnvironmentState() which return the state of the environment.
+                 * - The we call DetermineActionUponMyGoal() which determines which action will bring 
+                 * the robot to its goal.
+                 * Finally we call DoAction() which executes the action which has been chose,.
+                 */
+                GetEnvironmentState();
+                DoAction(DetermineActionUponMyGoal(UpdateMyState()));
+            }
         }
     }
 }

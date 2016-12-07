@@ -1,0 +1,9 @@
+diff a/MagicForest/MainWindow.xaml.cs b/MagicForest/MainWindow.xaml.cs	(rejected hunks)
+@@ -59,6 +59,7 @@
+ 
+             Actuator.OnExit += new Actuator.dlgExit(OnExit);
+             steveTheHero.OnDeath += new Hero.dlgDeath(OnDeath);
++            UpdateGUI();
+             //CreateForest();
+             //PopulateForest(m_afcForest);
+             //CreateGUI();

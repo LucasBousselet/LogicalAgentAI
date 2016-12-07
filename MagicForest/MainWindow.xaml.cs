@@ -50,16 +50,10 @@ namespace MagicForest
         public MainWindow()
         {
             InitializeComponent();
-            CreateForest();
-            PopulateForest(m_afcForest);
-            CreateGUI();
-            ShowForestCellsInGUI();
-            EditTextDetails();
-            Content = mainGrid;
-
+            
             Actuator.OnExit += new Actuator.dlgExit(OnExit);
             steveTheHero.OnDeath += new Hero.dlgDeath(OnDeath);
-            Inference();
+            UpdateGUI();
             //CreateForest();
             //PopulateForest(m_afcForest);
             //CreateGUI();
@@ -72,7 +66,7 @@ namespace MagicForest
         /// Inference cycle that is performed at every click
         /// Makes the decision to undertake an action (move, throw a rock or step into the portal)
         /// </summary>
-        public void Inference()
+        public void UpdateGUI()
         {
             CreateForest();
             PopulateForest(m_afcForest);
@@ -285,11 +279,9 @@ namespace MagicForest
         public void OnExit()
         {
             IncreaseForestSize();
-            Inference();
+            UpdateGUI();
 
             steveTheHero.CurrentForestCell = MainWindow.Forest[0, 0];
-
-
         }
 
         public static void OnDeath()
@@ -301,17 +293,7 @@ namespace MagicForest
 
         private void On_DoStuffButtonClick(object sender, RoutedEventArgs e)
         {
-            while (steveTheHero.AmIAlive())
-            {
-                /* The function call execute the BDI model.
-                 * - First we call GetEnvironmentState() which return the state of the environment.
-                 * - The we call DetermineActionUponMyGoal() which determines which action will bring 
-                 * the robot to its goal.
-                 * Finally we call DoAction() which executes the action which has been chose,.
-                 */
-                steveTheHero.GetEnvironmentState();
-                steveTheHero.DoAction(steveTheHero.DetermineActionUponMyGoal(steveTheHero.UpdateMyState()));
-            }
+            steveTheHero.Inference();
         }
     }
 }
