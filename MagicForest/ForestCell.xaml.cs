@@ -200,23 +200,50 @@ namespace MagicForest
         }
 
         /// <summary>
-        /// Removes the fact that a cell contains a monster
-        /// It also updates the neighoring cell and clean them from the smell
+        /// Removes the fact that a cell contains a monster (used after throwing a rock at it)
+        /// It also updates the neighoring cell and clean them from the smell, BUT ONLY if
+        /// no monster are around anymore in any other neighboring cells
         /// </summary>
         public void RemoveMonsterOnCell()
         {
+            // If the cell already does not contain a monster, we don't do anything
+            // (the case may arise when the hero throws a rock on an empty case)
+            if (HasMonster == false)
+            {
+                return;
+            }
+
+            // Neighbors of the cell we removed a monster from
             List<ForestCell> listOfNeighbors = new List<ForestCell>();
+            // Neighbors of the smelly cell we try to clean up
+            List<ForestCell> listOfSmellyCaseNeighbors = new List<ForestCell>();
+            bool monstersAreStillHere = false;
 
             HasMonster = false;
             // We know for sure it has nothing after the monster is killed,
             // because a cell can not contain a monster and something else
             HasNothing = true;
             listOfNeighbors = getAdjacentCells();
+            // For each neighbors of the case where we killed the monster ...
             for (int i = 0; i < listOfNeighbors.Count(); i++)
             {
-                listOfNeighbors[i].RemovePoop();
+                // ... we also retrieve its neighbors ... 
+                listOfSmellyCaseNeighbors = listOfNeighbors[i].getAdjacentCells();
+                // ... check in every one of them ...
+                for (int j = 0; j < listOfSmellyCaseNeighbors.Count(); j++)
+                {
+                    // ... if it still has a monster ...
+                    if (listOfSmellyCaseNeighbors[j].HasMonster)
+                    {
+                        monstersAreStillHere = true;
+                    }
+                }
+                if (monstersAreStillHere == false)
+                {
+                    // ... before at last removing the poop !
+                    listOfNeighbors[i].RemovePoop();
+                }
             }
-
         }
 
         /// <summary>
