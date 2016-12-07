@@ -20,8 +20,8 @@ namespace MagicForest
     /// </summary>
     public partial class ForestCell : UserControl
     {
-        private int m_iLineIndex;
-        private int m_iColumnIndex;
+        protected int m_iLineIndex;
+        protected int m_iColumnIndex;
 
         private bool m_bHasHero = false;
         private bool m_bHasPortal = false;

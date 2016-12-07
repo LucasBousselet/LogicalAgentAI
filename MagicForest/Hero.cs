@@ -18,6 +18,18 @@ namespace MagicForest
         private bool m_bLightDetected = false;
         private string m_sGoal = "GETOUTOMG!";
 
+        /// <summary>
+        /// 2-dimensional array of the knowledge our hero has of the current environment
+        /// </summary>
+        private static MemoryOfCell[,] m_lmcMemoryCells = null;
+
+        public MemoryOfCell[,] ForestOfMemoryCells
+        {
+            get
+            {
+                return m_lmcMemoryCells;
+            }
+        }
         public string DirectionFacing
         {
             get
