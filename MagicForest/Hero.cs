@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+=======
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace MagicForest
 {
@@ -28,6 +32,10 @@ namespace MagicForest
         private List<ForestCell> m_lfcCellsWithSmell;
         private int m_iMemorySize = 3;
 
+        public delegate void WatchingExitEvent();
+        public event WatchingExitEvent anEvent;
+        //WatchingExitEvent actualWatcherForExit = new WatchingExitEvent(On_PortalFound);
+
         /// <summary>
         /// 2-dimensional array of the knowledge our hero has of the current environment
         /// </summary>
@@ -45,6 +53,11 @@ namespace MagicForest
             }
         }
 
+        protected void OnEvent()
+        {
+            if (anEvent != null)
+            {
+                anEvent();
         public List<ForestCell> CellsOK
         {
             get
@@ -66,6 +79,18 @@ namespace MagicForest
             get
             {
                 return m_lmcMemory;
+            }
+        }
+
+        public int MemorySize
+        {
+            get
+            {
+                return m_iMemorySize;
+            }
+            set
+            {
+                m_iMemorySize = value;
             }
         }
 
@@ -712,6 +737,5 @@ namespace MagicForest
             }
             return iResult;
         }
-
     }
 }

@@ -12,7 +12,7 @@ namespace MagicForest
 
         private static int m_iForestSize = 3;
         private static ForestCell[,] m_afcForest = null;
-        private static Hero steveTheHero = new Hero();
+        public static Hero steveTheHero = new Hero();
         private static string m_sWhatsOnTheCell = String.Empty;
 
         public static int ForestSize
@@ -49,6 +49,7 @@ namespace MagicForest
 
         public MainWindow()
         {
+            steveTheHero.anEvent += new Hero.WatchingExitEvent(On_PortalFound);
             InitializeComponent();
             CreateForest();
             PopulateForest(m_afcForest);
@@ -59,6 +60,13 @@ namespace MagicForest
 
             Actuator.OnExit += new Actuator.dlgExit(OnExit);
             Hero.OnDeath += new Hero.dlgDeath(OnDeath);
+            Inference();
+            //CreateForest();
+            //PopulateForest(m_afcForest);
+            //CreateGUI();
+            //ShowForestCellsInGUI();
+            //EditTextDetails();
+            //Content = mainGrid;
         }
 
         /// <summary>
@@ -74,7 +82,7 @@ namespace MagicForest
             EditTextDetails();
             Content = mainGrid;
         }
-
+        
         public void IncreaseForestSize()
         {
             m_iForestSize++;
@@ -288,6 +296,12 @@ namespace MagicForest
 
 
             steveTheHero.CurrentCell = MainWindow.Forest[0, 0];
+        }
+
+        public static void On_PortalFound()
+        {
+            IncreaseForestSize();
+            Inference();
         }
 
         private void On_DoStuffButtonClick(object sender, RoutedEventArgs e)
