@@ -13,10 +13,19 @@ namespace MagicForest
         private int m_iScore;
         private ForestCell m_fcCurrentCell;
         private bool m_bStillAlive = true;
+
+        private bool m_bNothing = false;
         private bool m_bSmellDetected = false;
         private bool m_bWindDetected = false;
         private bool m_bLightDetected = false;
+
         private string m_sGoal = "GETOUTOMG!";
+
+        private MemoryOfCell m_mcCurrentMemoryCell;
+
+        private List<ForestCell> m_lfcCellsOK;
+        private List<ForestCell> m_lfcCellsSuspicous;
+        private List<ForestCell> m_lfcCellsWithSmell;
 
         /// <summary>
         /// 2-dimensional array of the knowledge our hero has of the current environment
@@ -135,6 +144,7 @@ namespace MagicForest
 
         public void GetEnvironmentState()
         {
+            m_bNothing = Sensor.HasNothing(m_fcCurrentCell);
             m_bLightDetected = Sensor.HasLight(m_fcCurrentCell);
             m_bSmellDetected = Sensor.HasSmell(m_fcCurrentCell);
             m_bWindDetected = Sensor.HasWind(m_fcCurrentCell);
@@ -142,29 +152,130 @@ namespace MagicForest
 
         public int UpdateMyState()
         {
-            int iResultState = 0;
+            int iResultState;
+
+            if (m_bNothing)
+            {
+                List<MemoryOfCell> MemoryCells = m_lmcMemoryCells[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentCells();
+                foreach (MemoryOfCell mcItem in MemoryCells)
+                {
+                    m_lfcCellsOK.AddRange(m_fcCurrentCell.getAdjacentCells());
+                    // Remove duplicates
+                    m_lfcCellsOK = m_lfcCellsOK.Distinct().ToList();
+
+                    mcItem.HasNoMonster = 1;
+                    mcItem.ContainMonster = -1;
+                    mcItem.MayContainMonster = -1;
+
+                    mcItem.HasNoHole = 1;
+                    mcItem.ContainHole = -1;
+                    mcItem.MayContainHole = -1;
+                }
+
+                iResultState = 0;
+            }
 
             if (m_bSmellDetected == true && m_bWindDetected == false)
             {
+                // Add cell to radList
+                m_lfcCellsWithSmell.Add(m_fcCurrentCell);
+
+                // Get the neighboor cells from current cell
+                List<MemoryOfCell> MemoryCells = m_lmcMemoryCells[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentCells();
+                foreach (MemoryOfCell mcItem in MemoryCells)
+                {
+                    // Check in neighboor cell isn't already ok
+                    foreach (ForestCell fcItem in m_lfcCellsOK)
+                    {
+                        if (mcItem.LineIndex == fcItem.LineIndex && mcItem.ColumnIndex == fcItem.ColumnIndex)
+                        {
+                            MemoryCells.Remove(mcItem);
+                        }
+                    }
+
+                    // Add ramaining cells to suspicious cells
+                    m_lfcCellsSuspicous.AddRange(m_fcCurrentCell.getAdjacentCells());
+                    m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
+
+                    // Update memory cells
+                    mcItem.MayContainMonster = 1;
+                    mcItem.HasNoMonster = -1;
+
+                    mcItem.HasNoHole = 1;
+                    mcItem.ContainHole = -1;
+                    mcItem.MayContainHole = -1;
+                }
+
                 iResultState = 1;
             }
             if (m_bWindDetected == true && m_bSmellDetected == false)
             {
+                // Get the neighboor cells from current cell
+                List<MemoryOfCell> MemoryCells = m_lmcMemoryCells[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentCells();
+                foreach (MemoryOfCell mcItem in MemoryCells)
+                {
+                    // Check in neighboor cell isn't already ok
+                    foreach (ForestCell fcItem in m_lfcCellsOK)
+                    {
+                        if (mcItem.LineIndex == fcItem.LineIndex && mcItem.ColumnIndex == fcItem.ColumnIndex)
+                        {
+                            MemoryCells.Remove(mcItem);
+                        }
+                    }
+
+                    // Add ramaining cells to suspicious cells
+                    m_lfcCellsSuspicous.AddRange(m_fcCurrentCell.getAdjacentCells());
+                    m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
+
+                    // Update memory cells
+                    mcItem.MayContainHole = 1;
+                    mcItem.HasNoHole = -1;
+
+                    mcItem.HasNoMonster = 1;
+                    mcItem.ContainMonster = -1;
+                    mcItem.MayContainMonster = -1;
+                }
+
                 iResultState = 2;
             }
             if (m_bWindDetected == true && m_bSmellDetected == true)
             {
+                // Get the neighboor cells from current cell
+                List<MemoryOfCell> MemoryCells = m_lmcMemoryCells[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentCells();
+                foreach (MemoryOfCell mcItem in MemoryCells)
+                {
+                    // Check in neighboor cell isn't already ok
+                    foreach (ForestCell fcItem in m_lfcCellsOK)
+                    {
+                        if (mcItem.LineIndex == fcItem.LineIndex && mcItem.ColumnIndex == fcItem.ColumnIndex)
+                        {
+                            MemoryCells.Remove(mcItem);
+                        }
+                    }
+
+                    // Add ramaining cells to suspicious cells
+                    m_lfcCellsSuspicous.AddRange(m_fcCurrentCell.getAdjacentCells());
+                    m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
+
+                    // Update memory cells
+                    mcItem.MayContainHole = 1;
+                    mcItem.HasNoHole = -1;
+
+                    mcItem.MayContainMonster = 1;
+                    mcItem.HasNoMonster = -1;
+                }
+
                 iResultState = 3;
             }
-            if (m_bLightDetected == true)
+            if (m_bLightDetected)
             {
                 iResultState = 4;
             }
-            if (m_fcCurrentCell.HasMonster == true)
+            if (m_fcCurrentCell.HasMonster)
             {
                 iResultState = 5;
             }
-            if (m_fcCurrentCell.HasHole == true)
+            if (m_fcCurrentCell.HasHole)
             {
                 iResultState = 6;
             }
@@ -191,21 +302,23 @@ namespace MagicForest
             // Smell
             if (p_iStateEnv == 1)
             {
-
+                
             }
             // Wind
             if (p_iStateEnv == 2)
             {
-
+                
             }
             // Smell + Wind
             if (p_iStateEnv == 3)
             {
-
+                
             }
             // Light
             if (p_iStateEnv == 4)
             {
+
+                // GET OUT !!!
 
             }
             // Monster
@@ -315,8 +428,27 @@ namespace MagicForest
                         iWorthiness = 0;
                     }
                     break;
-                // Light
+                // Wind + smell
                 case 3:
+                    if (p_paAction.Name() == "GoBackward")
+                    {
+                        iWorthiness = 1;
+                    }
+                    if (p_paAction.Name() == "GoForward")
+                    {
+                        iWorthiness = 0;
+                    }
+                    if (p_paAction.Name() == "ThrowRock")
+                    {
+                        iWorthiness = 0;
+                    }
+                    if (p_paAction.Name() == "Exit")
+                    {
+                        iWorthiness = 0;
+                    }
+                    break;
+                // Light
+                case 4:
                     if (p_paAction.Name() == "GoBackward")
                     {
                         iWorthiness = 0;

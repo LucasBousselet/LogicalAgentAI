@@ -8,6 +8,10 @@ namespace MagicForest
 {
     public static class Sensor
     {
+        public static bool HasNothing(ForestCell p_fcCell)
+        {
+            return p_fcCell.HasNothing;
+        }
 
         public static bool HasLight(ForestCell p_fcCell)
         {
