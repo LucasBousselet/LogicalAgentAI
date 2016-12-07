@@ -91,7 +91,7 @@ namespace MagicForest
         {
             // Initializes the text containing the cell's details (monster, smell, etc ...)
             VerboseCellContent = "";
-            ForestCell currentCell = steveTheHero.CurrentCell;
+            ForestCell currentCell = steveTheHero.CurrentForestCell;
             if (currentCell.HasNothing)
             {
                 VerboseCellContent = String.Concat(VerboseCellContent, "- rien de particulier\n");
@@ -237,7 +237,7 @@ namespace MagicForest
         /// <param name="pForest">The forest to populate, as a 2-dimensional array of ForestCell</param>
         public void PopulateForest(ForestCell[,] pForest)
         {
-            steveTheHero.CurrentCell = pForest[0, 0];
+            steveTheHero.CurrentForestCell = pForest[0, 0];
             pForest[0, 0].AddHeroOnCell();
 
             Random random = new Random();
@@ -287,20 +287,29 @@ namespace MagicForest
             IncreaseForestSize();
             Inference();
 
-            steveTheHero.CurrentCell = MainWindow.Forest[0, 0];
+            steveTheHero.CurrentForestCell = MainWindow.Forest[0, 0];
         }
 
         public static void OnDeath()
         {
 
 
-            steveTheHero.CurrentCell = MainWindow.Forest[0, 0];
+            steveTheHero.CurrentForestCell = MainWindow.Forest[0, 0];
         }
 
         private void On_DoStuffButtonClick(object sender, RoutedEventArgs e)
         {
-            IncreaseForestSize();
-            Inference();
+            while (steveTheHero.AmIAlive())
+            {
+                /* The function call execute the BDI model.
+                 * - First we call GetEnvironmentState() which return the state of the environment.
+                 * - The we call DetermineActionUponMyGoal() which determines which action will bring 
+                 * the robot to its goal.
+                 * Finally we call DoAction() which executes the action which has been chose,.
+                 */
+                steveTheHero.GetEnvironmentState();
+                steveTheHero.DoAction(steveTheHero.DetermineActionUponMyGoal(steveTheHero.UpdateMyState()));
+            }
         }
     }
 }

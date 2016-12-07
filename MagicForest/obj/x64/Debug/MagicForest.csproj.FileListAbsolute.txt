@@ -1,7 +1,6 @@
 C:\Users\NG\Google Drive\Mes documents - pro\UQAC\Intelligence artificielle\Projet 3 - Agent logique\Magic Forest\MagicForest\bin\x64\Debug\MagicForest.exe.config
 C:\Users\NG\Google Drive\Mes documents - pro\UQAC\Intelligence artificielle\Projet 3 - Agent logique\Magic Forest\MagicForest\bin\x64\Debug\MagicForest.exe
 C:\Users\NG\Google Drive\Mes documents - pro\UQAC\Intelligence artificielle\Projet 3 - Agent logique\Magic Forest\MagicForest\bin\x64\Debug\MagicForest.pdb
-C:\Users\NG\Google Drive\Mes documents - pro\UQAC\Intelligence artificielle\Projet 3 - Agent logique\Magic Forest\MagicForest\obj\x64\Debug\MagicForest.csprojResolveAssemblyReference.cache
 C:\Users\NG\Google Drive\Mes documents - pro\UQAC\Intelligence artificielle\Projet 3 - Agent logique\Magic Forest\MagicForest\obj\x64\Debug\ForestCell.g.cs
 C:\Users\NG\Google Drive\Mes documents - pro\UQAC\Intelligence artificielle\Projet 3 - Agent logique\Magic Forest\MagicForest\obj\x64\Debug\MainWindow.g.cs
 C:\Users\NG\Google Drive\Mes documents - pro\UQAC\Intelligence artificielle\Projet 3 - Agent logique\Magic Forest\MagicForest\obj\x64\Debug\App.g.cs

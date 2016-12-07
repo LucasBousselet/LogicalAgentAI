@@ -41,9 +41,11 @@ namespace MagicForest
             CalculateHCost(p_fcDestinationCell);
             int cost = 1/*CalculateCost(p_hHero.CurrentCell, p_fcDestinationCell)*/;
 
-            p_hHero.PreviousCell = p_hHero.CurrentCell;
-            p_hHero.CurrentCell = p_fcDestinationCell;
-            p_hHero.CurrentCell.AlreadyVisited = true;
+            p_hHero.PreviousForestCell = p_hHero.CurrentForestCell;
+            p_hHero.CurrentForestCell = p_fcDestinationCell;
+            p_hHero.CurrentMemoryCell = Hero.Memory[p_fcDestinationCell.LineIndex, p_fcDestinationCell.ColumnIndex];
+
+            p_hHero.CurrentForestCell.AlreadyVisited = true;
             p_hHero.Score -= cost;
             ResetGridCost();
         }
@@ -129,7 +131,7 @@ namespace MagicForest
         public static List<ForestCell> FindPath(Hero p_hHero, ForestCell p_fcDestinationCell)
         {
             List<ForestCell> path = new List<ForestCell>();
-            bool success = Search(p_hHero, p_hHero.CurrentCell, p_fcDestinationCell);
+            bool success = Search(p_hHero, p_hHero.CurrentForestCell, p_fcDestinationCell);
             if (success)
             {
                 ForestCell node = p_fcDestinationCell;
@@ -147,9 +149,9 @@ namespace MagicForest
 
         public static void ThrowRockLeft(Hero p_hHero)
         {
-            if (p_hHero.CurrentCell.LineIndex - 1 > 0)
+            if (p_hHero.CurrentForestCell.LineIndex - 1 > 0)
             {
-                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentCell.LineIndex - 1, p_hHero.CurrentCell.ColumnIndex];
+                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentForestCell.LineIndex - 1, p_hHero.CurrentForestCell.ColumnIndex];
                 p_fcTarget.RemoveMonsterOnCell();
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
@@ -161,9 +163,9 @@ namespace MagicForest
 
         public static void ThrowRockRight(Hero p_hHero)
         {
-            if (p_hHero.CurrentCell.LineIndex + 1 > 0)
+            if (p_hHero.CurrentForestCell.LineIndex + 1 > 0)
             {
-                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentCell.LineIndex + 1, p_hHero.CurrentCell.ColumnIndex];
+                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentForestCell.LineIndex + 1, p_hHero.CurrentForestCell.ColumnIndex];
                 p_fcTarget.RemoveMonsterOnCell();
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
@@ -174,9 +176,9 @@ namespace MagicForest
 
         public static void ThrowRockTop(Hero p_hHero)
         {
-            if (p_hHero.CurrentCell.ColumnIndex - 1 > 0)
+            if (p_hHero.CurrentForestCell.ColumnIndex - 1 > 0)
             {
-                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentCell.LineIndex, p_hHero.CurrentCell.ColumnIndex - 1];
+                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentForestCell.LineIndex, p_hHero.CurrentForestCell.ColumnIndex - 1];
                 p_fcTarget.RemoveMonsterOnCell();
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
@@ -187,9 +189,9 @@ namespace MagicForest
 
         public static void ThrowRockBottom(Hero p_hHero)
         {
-            if (p_hHero.CurrentCell.ColumnIndex + 1 > 0)
+            if (p_hHero.CurrentForestCell.ColumnIndex + 1 > 0)
             {
-                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentCell.LineIndex, p_hHero.CurrentCell.ColumnIndex + 1];
+                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentForestCell.LineIndex, p_hHero.CurrentForestCell.ColumnIndex + 1];
                 p_fcTarget.RemoveMonsterOnCell();
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
@@ -208,10 +210,6 @@ namespace MagicForest
             {
                 OnExit();
             }
-        }
-            p_hHero.Score = p_hHero.Score + 10 * p_hHero.MemorySize * p_hHero.MemorySize;
-
-            
         }
     }
 }
