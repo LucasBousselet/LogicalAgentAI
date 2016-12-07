@@ -125,7 +125,7 @@ namespace MagicForest
             }
         }
 
-        public ForestCell getFrontCell()
+     /*   public ForestCell getFrontCell()
         {
             ForestCell fcResult = null;
             switch (m_sDirectionFacing)
@@ -169,7 +169,7 @@ namespace MagicForest
                     break;
             }
             return fcResult;
-        }
+        }*/
 
         public bool AmIAlive()
         {

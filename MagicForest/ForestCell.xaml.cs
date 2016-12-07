@@ -205,19 +205,35 @@ namespace MagicForest
         /// </summary>
         public void AddMonsterOnCell()
         {
-            List<ForestCell> listOfneighbors = new List<ForestCell>();
+            List<ForestCell> listOfNeighbors = new List<ForestCell>();
 
             HasMonster = true;
             HasNothing = false;
-            listOfneighbors = getAdjacentCells();
-            for (int i = 0; i < listOfneighbors.Count(); i++)
+            listOfNeighbors = getAdjacentCells();
+            for (int i = 0; i < listOfNeighbors.Count(); i++)
             {
-                if (HasPortal == false)
-                if ((HasPortal == false) && (HasWind == false))
-                {
-                    listOfneighbors[i].AddPoop();
-                }
+                listOfNeighbors[i].AddPoop();
             }
+        }
+
+        /// <summary>
+        /// Removes the fact that a cell contains a monster
+        /// It also updates the neighoring cell and clean them from the smell
+        /// </summary>
+        public void RemoveMonsterOnCell()
+        {
+            List<ForestCell> listOfNeighbors = new List<ForestCell>();
+
+            HasMonster = false;
+            // We know for sure it has nothing after the monster is killed,
+            // because a cell can not contain a monster and something else
+            HasNothing = true;
+            listOfNeighbors = getAdjacentCells();
+            for (int i = 0; i < listOfNeighbors.Count(); i++)
+            {
+                listOfNeighbors[i].RemovePoop();
+            }
+
         }
 
         /// <summary>
@@ -239,11 +255,32 @@ namespace MagicForest
         }
 
         /// <summary>
+        /// Removes the fact that a cell contains poops
+        /// </summary>
+        public void RemovePoop()
+        {
+            HasPoop = false;
+            if ((HasPortal == false) && (HasWind == false))
+            {
+                HasNothing = true;
+            }
+        }
+
+        /// <summary>
         /// Adds a poop image to the cell
         /// </summary>
         public void AddPoopImage()
         {
             BitmapImage image = new BitmapImage(new Uri("Ressources/danger.jpg", UriKind.Relative));
+            cellImage.Source = image;
+        }
+
+        /// <summary>
+        /// Removes any image from the cell
+        /// </summary>
+        public void RemoveImage()
+        {
+            BitmapImage image = new BitmapImage(new Uri("", UriKind.Relative));
             cellImage.Source = image;
         }
 
@@ -259,11 +296,7 @@ namespace MagicForest
             listOfneighbors = getAdjacentCells();
             for (int i = 0; i < listOfneighbors.Count(); i++)
             {
-                if (HasPortal == false)
-                if ((HasPortal == false) && (HasPoop == false))
-                {
-                    listOfneighbors[i].AddWind();
-                }
+                listOfneighbors[i].AddWind();
             }
         }
 
