@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-=======
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,8 +31,12 @@ namespace MagicForest
         private List<ForestCell> m_lfcCellsWithSmell;
         private int m_iMemorySize = 3;
 
-        public delegate void WatchingExitEvent();
-        public event WatchingExitEvent anEvent;
+        // New delegate for player death
+        public delegate void dlgDeath();
+        public dlgDeath OnDeath;
+
+        //public delegate void WatchingExitEvent();
+        //public event WatchingExitEvent anEvent;
         //WatchingExitEvent actualWatcherForExit = new WatchingExitEvent(On_PortalFound);
 
         /// <summary>
@@ -53,11 +56,6 @@ namespace MagicForest
             }
         }
 
-        protected void OnEvent()
-        {
-            if (anEvent != null)
-            {
-                anEvent();
         public List<ForestCell> CellsOK
         {
             get
@@ -555,10 +553,6 @@ namespace MagicForest
 
             return aListActionPossible;
         }
-
-        // New delegate for player death
-        public delegate void dlgDeath();
-        public static dlgDeath OnDeath;
 
         /// <summary>
         /// 
