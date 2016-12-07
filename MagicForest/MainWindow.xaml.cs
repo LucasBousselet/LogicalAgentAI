@@ -81,7 +81,7 @@ namespace MagicForest
             EditTextDetails();
             Content = mainGrid;
         }
-        
+
         public void IncreaseForestSize()
         {
             m_iForestSize++;
@@ -288,6 +288,8 @@ namespace MagicForest
             Inference();
 
             steveTheHero.CurrentForestCell = MainWindow.Forest[0, 0];
+
+
         }
 
         public static void OnDeath()

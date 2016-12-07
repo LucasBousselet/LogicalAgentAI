@@ -744,5 +744,13 @@ namespace MagicForest
             }
             return iResult;
         }
+
+        /// <summary>
+        /// Logical Stuff
+        /// </summary>
+        public void Inference()
+        {
+            // TODO
+        }
     }
 }
