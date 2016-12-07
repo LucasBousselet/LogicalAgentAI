@@ -59,7 +59,7 @@ namespace MagicForest
 
             Actuator.OnExit += new Actuator.dlgExit(OnExit);
             steveTheHero.OnDeath += new Hero.dlgDeath(OnDeath);
-            Inference();
+            UpdateGUI();
             //CreateForest();
             //PopulateForest(m_afcForest);
             //CreateGUI();
@@ -72,7 +72,7 @@ namespace MagicForest
         /// Inference cycle that is performed at every click
         /// Makes the decision to undertake an action (move, throw a rock or step into the portal)
         /// </summary>
-        public void Inference()
+        public void UpdateGUI()
         {
             CreateForest();
             PopulateForest(m_afcForest);
@@ -284,23 +284,22 @@ namespace MagicForest
 
         public void OnExit()
         {
+            // We add 1 cell to the size of the forest
             IncreaseForestSize();
-            Inference();
-
+            // We replace our hero at the beginning of the new forest
             steveTheHero.CurrentCell = MainWindow.Forest[0, 0];
+            // We draw this new forest in the GUI
+            UpdateGUI();
         }
 
         public static void OnDeath()
         {
-
-
             steveTheHero.CurrentCell = MainWindow.Forest[0, 0];
         }
 
         private void On_DoStuffButtonClick(object sender, RoutedEventArgs e)
         {
-            IncreaseForestSize();
-            Inference();
+            steveTheHero.Inference();
         }
     }
 }

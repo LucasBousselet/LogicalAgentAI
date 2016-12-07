@@ -204,14 +204,7 @@ namespace MagicForest
 
         public static void Exit(Hero p_hHero)
         {
-            if (OnExit != null)
-            {
-                OnExit();
-            }
-        }
             p_hHero.Score = p_hHero.Score + 10 * p_hHero.MemorySize * p_hHero.MemorySize;
-
-            
         }
     }
 }
