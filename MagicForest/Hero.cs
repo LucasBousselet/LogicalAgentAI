@@ -26,6 +26,7 @@ namespace MagicForest
         private List<ForestCell> m_lfcCellsOK;
         private List<ForestCell> m_lfcCellsSuspicous;
         private List<ForestCell> m_lfcCellsWithSmell;
+        private int m_iMemorySize = 3;
 
         /// <summary>
         /// 2-dimensional array of the knowledge our hero has of the current environment
@@ -33,6 +34,7 @@ namespace MagicForest
         private static MemoryOfCell[,] m_lmcMemoryCells = null;
 
         public MemoryOfCell[,] ForestOfMemoryCells
+        public static MemoryOfCell[,] MatrixOfMemoryCells
         {
             get
             {
@@ -89,6 +91,22 @@ namespace MagicForest
             m_sDirectionFacing = m_asPossibleDirections[1];
             m_iScore = 0;
             //m_fcCurrentCell = MainWindow.Forest[0, 0];
+        }
+
+        /// <summary>
+        /// Puts MemoryCells inside the matrix of MemoryCell the hero has of his environment
+        /// </summary>
+        public void PopulateMemoryCellMatrix()
+        {
+            for (int i = 0; i < m_iMemorySize; i++)
+            {
+                for (int j = 0; j < m_iMemorySize; j++)
+                {
+                    MatrixOfMemoryCells[i, j] = new MemoryOfCell();
+                    MatrixOfMemoryCells[i, j].m_iLineIndex = i;
+                    MatrixOfMemoryCells[i, j].m_iColumnIndex = j;
+                }
+            }
         }
 
         public ForestCell getFrontCell()
@@ -335,6 +353,11 @@ namespace MagicForest
             return aListActionPossible;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="p_iStateEnv"></param>
+        /// <returns></returns>
         public PossibleAction DetermineActionUponMyGoal(int p_iStateEnv)
         {
             List<PossibleAction> lapListPossibleAction = ActionDeclenchable(p_iStateEnv);
