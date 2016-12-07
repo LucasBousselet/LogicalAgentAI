@@ -260,7 +260,7 @@ namespace MagicForest
                 }
             }
         }
-       // bool flag = true;
+       
         /// <summary>
         /// Randomly puts either a monster, a hole, or nothing on the input cell
         /// Also updates the neighboring cells with either smell or wind accordingly
