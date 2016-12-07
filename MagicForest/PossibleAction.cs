@@ -121,25 +121,79 @@ namespace MagicForest
         }
     }
 
-    public class ThrowRock : PossibleAction
+    public class ThrowRockLeft : PossibleAction
     {
-        private string m_sName = "ThrowRock";
-
-        private string m_sDirection;
+        private string m_sName = "ThrowRockLeft";
 
         public override string Name()
         {
             return m_sName;
         }
 
-        public ThrowRock(Hero p_hHero, string p_sDirection) : base(p_hHero)
+        public ThrowRockLeft(Hero p_hHero) : base(p_hHero)
         {
-            m_sDirection = p_sDirection;
         }
 
         public override void Act()
         {
-            Actuator.ThrowRock(m_hHero, m_sDirection);
+            Actuator.ThrowRockLeft(m_hHero);
+        }
+    }
+
+    public class ThrowRockRight : PossibleAction
+    {
+        private string m_sName = "ThrowRockRight";
+
+        public override string Name()
+        {
+            return m_sName;
+        }
+
+        public ThrowRockRight(Hero p_hHero) : base(p_hHero)
+        {
+        }
+
+        public override void Act()
+        {
+            Actuator.ThrowRockRight(m_hHero);
+        }
+    }
+
+    public class ThrowRockTop : PossibleAction
+    {
+        private string m_sName = "ThrowRockTop";
+
+        public override string Name()
+        {
+            return m_sName;
+        }
+
+        public ThrowRockTop(Hero p_hHero) : base(p_hHero)
+        {
+        }
+
+        public override void Act()
+        {
+            Actuator.ThrowRockTop(m_hHero);
+        }
+    }
+
+    public class ThrowRockBottom : PossibleAction
+    {
+        private string m_sName = "ThrowRockBottom";
+
+        public override string Name()
+        {
+            return m_sName;
+        }
+
+        public ThrowRockBottom(Hero p_hHero) : base(p_hHero)
+        {
+        }
+
+        public override void Act()
+        {
+            Actuator.ThrowRockBottom(m_hHero);
         }
     }
 

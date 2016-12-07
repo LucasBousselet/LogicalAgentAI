@@ -22,6 +22,11 @@ namespace MagicForest
     {
         private int m_iLineIndex;
         private int m_iColumnIndex;
+        private bool m_bClosed = false;
+
+        public double F { get { return G + H; } set {; } }
+        public double G;
+        public double H;
 
         private bool m_bHasHero = false;
         private bool m_bHasPortal = false;
@@ -36,6 +41,18 @@ namespace MagicForest
         public ForestCell()
         {
             InitializeComponent();
+        }
+
+        public bool Closed
+        {
+            get
+            {
+                return m_bClosed;
+            }
+            set
+            {
+                m_bClosed = value;
+            }
         }
 
         public int LineIndex
