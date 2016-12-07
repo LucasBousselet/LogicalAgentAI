@@ -24,9 +24,9 @@ namespace MagicForest
         private int m_iColumnIndex;
         private bool m_bClosed = false;
 
-        public float F;
-        public float G;
-        public float H;
+        public double F { get { return G + H; } set {; } }
+        public double G;
+        public double H;
 
         private bool m_bHasHero = false;
         private bool m_bHasPortal = false;
@@ -43,7 +43,7 @@ namespace MagicForest
             InitializeComponent();
         }
 
-        public  bool Closed
+        public bool Closed
         {
             get
             {

@@ -125,51 +125,51 @@ namespace MagicForest
             }
         }
 
-     /*   public ForestCell getFrontCell()
-        {
-            ForestCell fcResult = null;
-            switch (m_sDirectionFacing)
-            {
-                case "top":
-                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex - 1, m_fcCurrentCell.LineIndex];
-                    break;
-                case "right":
-                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex + 1];
-                    break;
-                case "bottom":
-                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex + 1, m_fcCurrentCell.LineIndex];
-                    break;
-                case "left":
-                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex - 1];
-                    break;
-                default:
-                    break;
-            }
-            return fcResult;
-        }
+        /*   public ForestCell getFrontCell()
+           {
+               ForestCell fcResult = null;
+               switch (m_sDirectionFacing)
+               {
+                   case "top":
+                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex - 1, m_fcCurrentCell.LineIndex];
+                       break;
+                   case "right":
+                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex + 1];
+                       break;
+                   case "bottom":
+                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex + 1, m_fcCurrentCell.LineIndex];
+                       break;
+                   case "left":
+                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex - 1];
+                       break;
+                   default:
+                       break;
+               }
+               return fcResult;
+           }
 
-        public ForestCell getBackCell()
-        {
-            ForestCell fcResult = null;
-            switch (m_sDirectionFacing)
-            {
-                case "top":
-                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex + 1, m_fcCurrentCell.LineIndex];
-                    break;
-                case "right":
-                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex - 1];
-                    break;
-                case "bottom":
-                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex - 1, m_fcCurrentCell.LineIndex];
-                    break;
-                case "left":
-                    fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex + 1];
-                    break;
-                default:
-                    break;
-            }
-            return fcResult;
-        }*/
+           public ForestCell getBackCell()
+           {
+               ForestCell fcResult = null;
+               switch (m_sDirectionFacing)
+               {
+                   case "top":
+                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex + 1, m_fcCurrentCell.LineIndex];
+                       break;
+                   case "right":
+                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex - 1];
+                       break;
+                   case "bottom":
+                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex - 1, m_fcCurrentCell.LineIndex];
+                       break;
+                   case "left":
+                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex + 1];
+                       break;
+                   default:
+                       break;
+               }
+               return fcResult;
+           }*/
 
         public bool AmIAlive()
         {
@@ -319,11 +319,17 @@ namespace MagicForest
 
         private List<PossibleAction> ActionDeclenchable(int p_iStateEnv)
         {
-            //TurnLeft apActToTurnLeft = new TurnLeft(this);
-            //TurnRight apActToTurnRIght = new TurnRight(this);
+            /*
+            TurnLeft apActToTurnLeft = new TurnLeft(this);
+            TurnRight apActToTurnRIght = new TurnRight(this);
             GoBackward apActToGoBackward = new GoBackward(this);
             GoForward apActToGoForward = new GoForward(this);
-            ThrowRock apActToThrowRock = new ThrowRock(this);
+            */
+            Move paActToMove = new Move(this);
+            ThrowRockLeft paActToThrowRockLeft = new ThrowRockLeft(this);
+            ThrowRockRight paActToThrowRockRight = new ThrowRockRight(this);
+            ThrowRockTop paActToThrowRockTop = new ThrowRockTop(this);
+            ThrowRockBottom paActToThrowRockBottom = new ThrowRockBottom(this);
             Exit apActToExit = new Exit(this);
 
             List<PossibleAction> aListActionPossible = new List<PossibleAction>();
@@ -351,6 +357,7 @@ namespace MagicForest
             // Light
             if (p_iStateEnv == 4)
             {
+                aListActionPossible.Add(paActToMove);
                 // GET OUT !!!
             }
             // Monster
@@ -410,15 +417,23 @@ namespace MagicForest
             {
                 // Empty
                 case 0:
-                    if (p_paAction.Name() == "GoBackward")
+                    if (p_paAction.Name() == "Move")
                     {
                         iWorthiness = 1;
                     }
-                    if (p_paAction.Name() == "GoForward")
+                    if (p_paAction.Name() == "ThrowRockLeft")
                     {
-                        iWorthiness = 1;
+                        iWorthiness = 0;
                     }
-                    if (p_paAction.Name() == "ThrowRock")
+                    if (p_paAction.Name() == "ThrowRockRight")
+                    {
+                        iWorthiness = 0;
+                    }
+                    if (p_paAction.Name() == "ThrowRockTop")
+                    {
+                        iWorthiness = 0;
+                    }
+                    if (p_paAction.Name() == "ThrowRockBottom")
                     {
                         iWorthiness = 0;
                     }
@@ -429,15 +444,23 @@ namespace MagicForest
                     break;
                 // Smell
                 case 1:
-                    if (p_paAction.Name() == "GoBackward")
+                    if (p_paAction.Name() == "Move")
                     {
                         iWorthiness = 0;
                     }
-                    if (p_paAction.Name() == "GoForward")
+                    if (p_paAction.Name() == "ThrowRockLeft")
                     {
-                        iWorthiness = 0;
+                        iWorthiness = 1;
                     }
-                    if (p_paAction.Name() == "ThrowRock")
+                    if (p_paAction.Name() == "ThrowRockRight")
+                    {
+                        iWorthiness = 1;
+                    }
+                    if (p_paAction.Name() == "ThrowRockTop")
+                    {
+                        iWorthiness = 1;
+                    }
+                    if (p_paAction.Name() == "ThrowRockBottom")
                     {
                         iWorthiness = 1;
                     }
@@ -448,15 +471,23 @@ namespace MagicForest
                     break;
                 // Wind
                 case 2:
-                    if (p_paAction.Name() == "GoBackward")
+                    if (p_paAction.Name() == "Move")
                     {
                         iWorthiness = 1;
                     }
-                    if (p_paAction.Name() == "GoForward")
+                    if (p_paAction.Name() == "ThrowRockLeft")
                     {
                         iWorthiness = 0;
                     }
-                    if (p_paAction.Name() == "ThrowRock")
+                    if (p_paAction.Name() == "ThrowRockRight")
+                    {
+                        iWorthiness = 0;
+                    }
+                    if (p_paAction.Name() == "ThrowRockTop")
+                    {
+                        iWorthiness = 0;
+                    }
+                    if (p_paAction.Name() == "ThrowRockBottom")
                     {
                         iWorthiness = 0;
                     }
@@ -467,15 +498,23 @@ namespace MagicForest
                     break;
                 // Wind + smell
                 case 3:
-                    if (p_paAction.Name() == "GoBackward")
-                    {
-                        iWorthiness = 1;
-                    }
-                    if (p_paAction.Name() == "GoForward")
+                    if (p_paAction.Name() == "Move")
                     {
                         iWorthiness = 0;
                     }
-                    if (p_paAction.Name() == "ThrowRock")
+                    if (p_paAction.Name() == "ThrowRockLeft")
+                    {
+                        iWorthiness = 0;
+                    }
+                    if (p_paAction.Name() == "ThrowRockRight")
+                    {
+                        iWorthiness = 0;
+                    }
+                    if (p_paAction.Name() == "ThrowRockTop")
+                    {
+                        iWorthiness = 0;
+                    }
+                    if (p_paAction.Name() == "ThrowRockBottom")
                     {
                         iWorthiness = 0;
                     }
@@ -486,15 +525,23 @@ namespace MagicForest
                     break;
                 // Light
                 case 4:
-                    if (p_paAction.Name() == "GoBackward")
+                    if (p_paAction.Name() == "Move")
                     {
                         iWorthiness = 0;
                     }
-                    if (p_paAction.Name() == "GoForward")
+                    if (p_paAction.Name() == "ThrowRockLeft")
                     {
                         iWorthiness = 0;
                     }
-                    if (p_paAction.Name() == "ThrowRock")
+                    if (p_paAction.Name() == "ThrowRockRight")
+                    {
+                        iWorthiness = 0;
+                    }
+                    if (p_paAction.Name() == "ThrowRockTop")
+                    {
+                        iWorthiness = 0;
+                    }
+                    if (p_paAction.Name() == "ThrowRockBottom")
                     {
                         iWorthiness = 0;
                     }

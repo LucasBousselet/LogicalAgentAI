@@ -41,19 +41,40 @@ namespace MagicForest
 
         public static void Move(Hero p_hHero, ForestCell p_fcDestinationCell)
         {
+            CalculateHCost(p_fcDestinationCell);
             int cost = 1/*CalculateCost(p_hHero.CurrentCell, p_fcDestinationCell)*/;
             p_hHero.CurrentCell = p_fcDestinationCell;
             p_hHero.CurrentCell.AlreadyVisited = true;
-            p_hHero.Score-= cost;
+            p_hHero.Score -= cost;
+            ResetGridCost();
         }
 
-        /*
-        public static int CalculateCost(ForestCell p_fcStartingCell, ForestCell p_fcDestinationCell)
+
+        public static void CalculateHCost(ForestCell p_fcDestinationCell)
         {
-
+            for (int i = 0; i < MainWindow.ForestSize; i++)
+            {
+                for (int j = 0; j < MainWindow.ForestSize; j++)
+                {
+                    MainWindow.Forest[i, j].H = Math.Sqrt(Math.Pow(p_fcDestinationCell.LineIndex - i, 2) + Math.Pow(p_fcDestinationCell.ColumnIndex - j, 2));
+                }
+            }
         }
 
-        private List<ForestCell> GetAdjacentSafeCells(Hero p_hHero, ForestCell p_fcCell)
+        public static void ResetGridCost()
+        {
+            for (int i = 0; i < MainWindow.ForestSize; i++)
+            {
+                for (int j = 0; j < MainWindow.ForestSize; j++)
+                {
+                    MainWindow.Forest[i, j].H = 0;
+                    MainWindow.Forest[i, j].F = 0;
+                    MainWindow.Forest[i, j].G = 0;
+                }
+            }
+        }
+
+        private static List<ForestCell> GetAdjacentSafeCells(Hero p_hHero, ForestCell p_fcCell)
         {
             List<ForestCell> fcResult = new List<ForestCell>();
             List<ForestCell> fcNeighboorsList = p_fcCell.getAdjacentCells();
@@ -65,43 +86,90 @@ namespace MagicForest
                 }
                 if (p_hHero.CellsOK.Contains(fcItem) || p_hHero.CellsSuspicous.Contains(fcItem))
                 {
-                    fcResult.Add(fcItem);
+                    //float traversalCost = Node.GetTraversalCost(node.Location, node.ParentNode.Location);
+                    double gTemp = p_fcCell.G++;
+                    if (gTemp < fcItem.G)
+                    {
+                        //node.ParentNode = fromNode;
+                        fcResult.Add(fcItem);
+                    }
+                    //fcResult.Add(fcItem);
                 }
             }
             return fcResult;
         }
 
-        private static int CalculateCost(ForestCell p_fcCell, ForestCell p_fcParentCell)
-        {
-
-            return 1;
-        }
-
-        private static bool Search(Hero p_hHero, ForestCell p_fcCell)
+        private static bool Search(Hero p_hHero, ForestCell p_fcCell, ForestCell p_fcDestinationCell)
         {
             p_fcCell.Closed = true;
             List<ForestCell> nextCells = GetAdjacentSafeCells(p_hHero, p_fcCell);
             nextCells.Sort((node1, node2) => node1.F.CompareTo(node2.F));
-            foreach (var nextNode in nextCells)
+            foreach (ForestCell nextCell in nextCells)
             {
-                if (Search(nextNode)) // Note: Recurses back into Search(Node)
+                if (nextCell.Equals(p_fcDestinationCell))
+                {
                     return true;
+                }
+                else
+                {
+                    if (Search(p_hHero, nextCell, p_fcDestinationCell)) // Note: Recurses back into Search(Node)
+                        return true;
+                }
             }
             return false;
         }
-        */
 
-        public static void ThrowRock(Hero p_hHero, string direction)
+
+        public static void ThrowRockLeft(Hero p_hHero)
         {
-            ForestCell fcTargetCell = p_hHero.getFrontCell();
-            fcTargetCell.HasMonster = false;
-
-            List<ForestCell> lfcAdjacentForectCells = fcTargetCell.getAdjacentCells();
-            foreach (ForestCell fcForectCell in lfcAdjacentForectCells)
+            if (p_hHero.CurrentCell.LineIndex - 1 > 0)
             {
-                fcForectCell.HasPoop = false;
+                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentCell.LineIndex - 1, p_hHero.CurrentCell.ColumnIndex];
+                p_fcTarget.RemoveMonsterOnCell();
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].MayContainMonster = -1;
+                p_hHero.Score -= 10;
             }
-            p_hHero.Score -= 10;
+        }
+
+        public static void ThrowRockRight(Hero p_hHero)
+        {
+            if (p_hHero.CurrentCell.LineIndex + 1 > 0)
+            {
+                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentCell.LineIndex + 1, p_hHero.CurrentCell.ColumnIndex];
+                p_fcTarget.RemoveMonsterOnCell();
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].MayContainMonster = -1;
+                p_hHero.Score -= 10;
+            }
+        }
+
+        public static void ThrowRockTop(Hero p_hHero)
+        {
+            if (p_hHero.CurrentCell.ColumnIndex - 1 > 0)
+            {
+                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentCell.LineIndex, p_hHero.CurrentCell.ColumnIndex - 1];
+                p_fcTarget.RemoveMonsterOnCell();
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].MayContainMonster = -1;
+                p_hHero.Score -= 10;
+            }
+        }
+
+        public static void ThrowRockBottom(Hero p_hHero)
+        {
+            if (p_hHero.CurrentCell.ColumnIndex + 1 > 0)
+            {
+                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentCell.LineIndex, p_hHero.CurrentCell.ColumnIndex + 1];
+                p_fcTarget.RemoveMonsterOnCell();
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].MayContainMonster = -1;
+                p_hHero.Score -= 10;
+            }
         }
 
         public static void Exit(Hero p_hHero)
