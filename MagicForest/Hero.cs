@@ -290,15 +290,18 @@ namespace MagicForest
                         {
                             m_lfcCellsSuspicous.Add(fcItem);
 
-                            // Update memory cells
-                            MemoryCells[i].MayContainMonster = 1;
-                            MemoryCells[i].HasNoMonster = -1;
+                            //Memory[fcItem.LineIndex, fcItem.ColumnIndex]
 
-                            MemoryCells[i].HasNoHole = 1;
-                            MemoryCells[i].ContainHole = -1;
-                            MemoryCells[i].MayContainHole = -1;
+                            // Update memory cells
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainMonster = 1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster = -1;
+
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoHole = 1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].ContainHole = -1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainHole = -1;
                         }
                     }
+                    
                     /*
                     // Update memory cells
                     MemoryCells[i].MayContainMonster = 1;
@@ -306,7 +309,8 @@ namespace MagicForest
 
                     MemoryCells[i].HasNoHole = 1;
                     MemoryCells[i].ContainHole = -1;
-                    MemoryCells[i].MayContainHole = -1;*/
+                    MemoryCells[i].MayContainHole = -1;
+                    */
                 }
 
                 iResultState = 1;
@@ -315,29 +319,29 @@ namespace MagicForest
             {
                 // Get the neighboor cells from current cell
                 List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
-                //foreach (MemoryCell mcItem in MemoryCells)
                 for (int i = MemoryCells.Count - 1; i >= 0; i--)
                 {
                     // Check in neighboor cell isn't already ok
-                    foreach (ForestCell fcItem in m_lfcCellsOK)
+                    List<ForestCell> fcNeighboorForestCells = m_fcCurrentForestCell.getAdjacentCells();
+                    //m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
+
+                    foreach (ForestCell fcItem in fcNeighboorForestCells)
                     {
-                        if (MemoryCells[i].LineIndex == fcItem.LineIndex && MemoryCells[i].ColumnIndex == fcItem.ColumnIndex)
+                        if (!m_lfcCellsOK.Contains(fcItem))
                         {
-                            MemoryCells.Remove(MemoryCells[i]);
+                            m_lfcCellsSuspicous.Add(fcItem);
+
+                            //Memory[fcItem.LineIndex, fcItem.ColumnIndex]
+
+                            // Update memory cells
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainMonster = 1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster = -1;
+
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoHole = 1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].ContainHole = -1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainHole = -1;
                         }
                     }
-
-                    // Add ramaining cells to suspicious cells
-                    m_lfcCellsSuspicous.AddRange(m_fcCurrentForestCell.getAdjacentCells());
-                    m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
-
-                    // Update memory cells
-                    MemoryCells[i].MayContainHole = 1;
-                    MemoryCells[i].HasNoHole = -1;
-
-                    MemoryCells[i].HasNoMonster = 1;
-                    MemoryCells[i].ContainMonster = -1;
-                    MemoryCells[i].MayContainMonster = -1;
                 }
 
                 iResultState = 2;
@@ -445,6 +449,7 @@ namespace MagicForest
             // Smell
             if (p_iStateEnv == 1)
             {
+                bool flag = false;
                 // If there are some remaining safe cells, move there
                 if (m_lfcCellsOK.Any())
                 {
@@ -455,20 +460,21 @@ namespace MagicForest
                         {
                             Move paActToMove = new Move(this, fcItem);
                             aListActionPossible.Add(paActToMove);
+                            flag = true;
                             break;
                         }
                     }
                 }
                 // Else try to kill monster
-                else
+                if(!flag)
                 {
                     List<ForestCell> lfcTargets = CurrentForestCell.getAdjacentCells();
                     // Remove cell visited just before from targets
-                    foreach (ForestCell fcItem in lfcTargets)
+                    for (int i = lfcTargets.Count - 1; i >= 0; i--)
                     {
-                        if (Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster == 1)
+                        if (Memory[lfcTargets[i].LineIndex, lfcTargets[i].ColumnIndex].HasNoMonster == 1)
                         {
-                            lfcTargets.Remove(fcItem);
+                            lfcTargets.Remove(lfcTargets[i]);
                         }
                     }
 
@@ -476,28 +482,28 @@ namespace MagicForest
                     Random r = new Random();
                     int iTargetIndex = r.Next(0, lfcTargets.Count);
 
-                    if (lfcTargets[iTargetIndex].LineIndex < m_fcCurrentForestCell.LineIndex)
+                    if (lfcTargets[iTargetIndex].ColumnIndex < m_fcCurrentForestCell.ColumnIndex)
                     {
                         aListActionPossible.Add(paActToThrowRockLeft);
                         Debug.WriteLine("Throw rock left");
                     }
                     else
                     {
-                        if (lfcTargets[iTargetIndex].LineIndex > m_fcCurrentForestCell.LineIndex)
+                        if (lfcTargets[iTargetIndex].ColumnIndex > m_fcCurrentForestCell.ColumnIndex)
                         {
                             aListActionPossible.Add(paActToThrowRockRight);
                             Debug.WriteLine("Throw rock right");
                         }
                         else
                         {
-                            if (lfcTargets[iTargetIndex].ColumnIndex < m_fcCurrentForestCell.ColumnIndex)
+                            if (lfcTargets[iTargetIndex].LineIndex < m_fcCurrentForestCell.LineIndex)
                             {
                                 aListActionPossible.Add(paActToThrowRockTop);
                                 Debug.WriteLine("Throw rock top");
                             }
                             else
                             {
-                                if (lfcTargets[iTargetIndex].ColumnIndex > m_fcCurrentForestCell.ColumnIndex)
+                                if (lfcTargets[iTargetIndex].LineIndex > m_fcCurrentForestCell.LineIndex)
                                 {
                                     aListActionPossible.Add(paActToThrowRockBottom);
                                     Debug.WriteLine("Throw rock bottom");
@@ -517,6 +523,7 @@ namespace MagicForest
             // Smell + Wind
             if (p_iStateEnv == 3)
             {
+                bool flag = false;
                 // If there are some remaining safe cells, move there
                 if (m_lfcCellsOK.Any())
                 {
@@ -527,12 +534,13 @@ namespace MagicForest
                         {
                             Move paActToMove = new Move(this, fcItem);
                             aListActionPossible.Add(paActToMove);
+                            flag = true;
                             break;
                         }
                     }
                 }
                 // Else try to kill monster and wait for result
-                else
+                if(!flag)
                 {
                     List<ForestCell> lfcTargets = CurrentForestCell.getAdjacentCells();
                     // Remove cell visited just before from targets
@@ -556,14 +564,14 @@ namespace MagicForest
                         Random r = new Random();
                         int iTargetIndex = r.Next(0, lfcTargets.Count);
 
-                        if (lfcTargets[iTargetIndex].LineIndex < m_fcCurrentForestCell.LineIndex)
+                        if (lfcTargets[iTargetIndex].ColumnIndex < m_fcCurrentForestCell.ColumnIndex)
                         {
                             aListActionPossible.Add(paActToThrowRockLeft);
                             Debug.WriteLine("Throw rock left");
                         }
                         else
                         {
-                            if (lfcTargets[iTargetIndex].LineIndex > m_fcCurrentForestCell.LineIndex)
+                            if (lfcTargets[iTargetIndex].ColumnIndex > m_fcCurrentForestCell.ColumnIndex)
                             {
                                 aListActionPossible.Add(paActToThrowRockRight);
                                 Debug.WriteLine("Throw rock right");
@@ -571,14 +579,14 @@ namespace MagicForest
                             }
                             else
                             {
-                                if (lfcTargets[iTargetIndex].ColumnIndex < m_fcCurrentForestCell.ColumnIndex)
+                                if (lfcTargets[iTargetIndex].LineIndex < m_fcCurrentForestCell.LineIndex)
                                 {
                                     aListActionPossible.Add(paActToThrowRockTop);
                                     Debug.WriteLine("Throw rock top");
                                 }
                                 else
                                 {
-                                    if (lfcTargets[iTargetIndex].ColumnIndex > m_fcCurrentForestCell.ColumnIndex)
+                                    if (lfcTargets[iTargetIndex].LineIndex > m_fcCurrentForestCell.LineIndex)
                                     {
                                         aListActionPossible.Add(paActToThrowRockBottom);
                                         Debug.WriteLine("Throw rock bottom");

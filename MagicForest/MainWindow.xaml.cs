@@ -285,12 +285,12 @@ namespace MagicForest
             int die = r.Next(0, 100);
 
             // There is 15% of chance for the generated number to be in the following range
-            if ((die >= 0) && (die < 80))
+            if ((die >= 0) && (die < 100))
             {
                 pCell.AddMonsterOnCell();
             }
             // There is 15% of chance for the generated number to be in the following range
-            if ((die >= 90) && (die <= 100))
+            if ((die >= 100) && (die <= 100))
             {
                 pCell.AddHoleOnCell();
             }
@@ -361,8 +361,6 @@ namespace MagicForest
 
             PopulateForest(m_afcForest);
             CreateGUI();
-
-            UpdateGUI();
         }
 
         private void On_DoStuffButtonClick(object sender, RoutedEventArgs e)
