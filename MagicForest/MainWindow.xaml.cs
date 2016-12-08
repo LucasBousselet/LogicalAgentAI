@@ -101,27 +101,27 @@ namespace MagicForest
             ForestCell currentCell = steveTheHero.CurrentForestCell;
             if (currentCell.HasNothing)
             {
-                VerboseCellContent = string.Concat(VerboseCellContent, "- rien de particulier\n");
+                VerboseCellContent = string.Concat(VerboseCellContent, "- Nothing\n");
             }
             if (currentCell.HasHole)
             {
-                VerboseCellContent = string.Concat(VerboseCellContent, "- un trou ... Damned ...\n");
+                VerboseCellContent = string.Concat(VerboseCellContent, "- A hole ! Damned !\n");
             }
             if (currentCell.HasMonster)
             {
-                VerboseCellContent = string.Concat(VerboseCellContent, "- un alien ... Game Over\n");
+                VerboseCellContent = string.Concat(VerboseCellContent, "- An Alien ! Game Over\n");
             }
             if (currentCell.HasWind)
             {
-                VerboseCellContent = string.Concat(VerboseCellContent, "- un brusque coup de vent\n");
+                VerboseCellContent = string.Concat(VerboseCellContent, "- Some wind\n");
             }
             if (currentCell.HasPoop)
             {
-                VerboseCellContent = string.Concat(VerboseCellContent, "- une odeur étrange\n");
+                VerboseCellContent = string.Concat(VerboseCellContent, "- Some smell\n");
             }
             if (currentCell.HasPortal)
             {
-                VerboseCellContent = string.Concat(VerboseCellContent, "- une douce lumière\n");
+                VerboseCellContent = string.Concat(VerboseCellContent, "- Some light\n");
             }
             currentCellText.Text = VerboseCellContent;
         }
@@ -285,12 +285,12 @@ namespace MagicForest
             int die = r.Next(0, 100);
 
             // There is 15% of chance for the generated number to be in the following range
-            if ((die >= 0) && (die < 100))
+            if ((die >= 0) && (die < 10))
             {
                 pCell.AddMonsterOnCell();
             }
             // There is 15% of chance for the generated number to be in the following range
-            if ((die >= 100) && (die <= 100))
+            if ((die >= 90) && (die <= 100))
             {
                 pCell.AddHoleOnCell();
             }
@@ -323,11 +323,11 @@ namespace MagicForest
 
         public void OnExit()
         {
+            int score = steveTheHero.Score + 10 * (int)Math.Pow(m_iForestSize, 2);
+
             IncreaseForestSize();
 
             CreateForest();
-
-            int score = steveTheHero.Score;
 
             //Hero.Memory = new MemoryCell[steveTheHero.MemorySize, steveTheHero.MemorySize];
             //steveTheHero.PopulateMemoryCellMatrix();
@@ -346,7 +346,9 @@ namespace MagicForest
 
         public void OnDeath()
         {
-            MessageBox.Show("You unfortunatly dies in agony, maybe next time...",
+            int score = steveTheHero.Score - 10 * (int)Math.Pow(m_iForestSize, 2);
+
+            MessageBox.Show("You unfortunatly dies in agony, maybe next time...\nScore final : " + score,
                 "You died !",
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);

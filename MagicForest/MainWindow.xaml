@@ -16,7 +16,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
-            <TextBlock> Sur la case se trouve :</TextBlock>
+            <TextBlock> On this cell, we have :</TextBlock>
             <TextBlock x:Name="currentCellText" MinHeight="100">. . . </TextBlock>
                 <Button x:Name="MoveButton" Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" Height="30" Click="On_DoStuffButtonClick">Do Stuff</Button>
         </StackPanel>

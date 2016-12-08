@@ -276,21 +276,15 @@ namespace MagicForest
                 List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
                 for (int i = MemoryCells.Count - 1; i >= 0; i--)
                 {
-                    /*if (mcItem.HasNoMonster == 1)
-                    {
-                        MemoryCells.Remove(mcItem);
-                    }*/
                     // Check in neighboor cell isn't already ok
                     List<ForestCell> fcNeighboorForestCells = m_fcCurrentForestCell.getAdjacentCells();
-                    //m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
 
                     foreach (ForestCell fcItem in fcNeighboorForestCells)
                     {
                         if (!m_lfcCellsOK.Contains(fcItem))
                         {
                             m_lfcCellsSuspicous.Add(fcItem);
-
-                            //Memory[fcItem.LineIndex, fcItem.ColumnIndex]
+                            m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
 
                             // Update memory cells
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainMonster = 1;
@@ -301,16 +295,6 @@ namespace MagicForest
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainHole = -1;
                         }
                     }
-                    
-                    /*
-                    // Update memory cells
-                    MemoryCells[i].MayContainMonster = 1;
-                    MemoryCells[i].HasNoMonster = -1;
-
-                    MemoryCells[i].HasNoHole = 1;
-                    MemoryCells[i].ContainHole = -1;
-                    MemoryCells[i].MayContainHole = -1;
-                    */
                 }
 
                 iResultState = 1;
@@ -323,23 +307,23 @@ namespace MagicForest
                 {
                     // Check in neighboor cell isn't already ok
                     List<ForestCell> fcNeighboorForestCells = m_fcCurrentForestCell.getAdjacentCells();
-                    //m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
 
                     foreach (ForestCell fcItem in fcNeighboorForestCells)
                     {
                         if (!m_lfcCellsOK.Contains(fcItem))
                         {
                             m_lfcCellsSuspicous.Add(fcItem);
+                            m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
 
                             //Memory[fcItem.LineIndex, fcItem.ColumnIndex]
 
                             // Update memory cells
-                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainMonster = 1;
-                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster = -1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainHole = 1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoHole = -1;
 
-                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoHole = 1;
-                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].ContainHole = -1;
-                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainHole = -1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster = 1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].ContainMonster = -1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainMonster = -1;
                         }
                     }
                 }
@@ -348,6 +332,34 @@ namespace MagicForest
             }
             if (m_bWindDetected && m_bSmellDetected && !m_bLightDetected)
             {
+                // Get the neighboor cells from current cell
+                List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
+                for (int i = MemoryCells.Count - 1; i >= 0; i--)
+                {
+                    // Check in neighboor cell isn't already ok
+                    List<ForestCell> fcNeighboorForestCells = m_fcCurrentForestCell.getAdjacentCells();
+
+                    foreach (ForestCell fcItem in fcNeighboorForestCells)
+                    {
+                        if (!m_lfcCellsOK.Contains(fcItem))
+                        {
+                            m_lfcCellsSuspicous.Add(fcItem);
+                            m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
+
+                            //Memory[fcItem.LineIndex, fcItem.ColumnIndex]
+
+                            // Update memory cells
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainHole = 1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoHole = -1;
+
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainMonster = 1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster = -1;
+
+                        }
+                    }
+                }
+
+                /*
                 // Get the neighboor cells from current cell
                 List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
                 for (int i = MemoryCells.Count - 1; i >= 0; i--)
@@ -372,6 +384,7 @@ namespace MagicForest
                     MemoryCells[i].MayContainMonster = 1;
                     MemoryCells[i].HasNoMonster = -1;
                 }
+                */
 
                 iResultState = 3;
             }
@@ -408,7 +421,7 @@ namespace MagicForest
 
             List<PossibleAction> aListActionPossible = new List<PossibleAction>();
 
-            // Empty cell
+            // Empty cell or wind
             if (p_iStateEnv == 0 || p_iStateEnv == 2)
             {
                 bool flag = false;
@@ -422,25 +435,31 @@ namespace MagicForest
                         {
                             Move paActToMove = new Move(this, fcItem);
                             aListActionPossible.Add(paActToMove);
+                            flag = true;
                             break;
                         }
                     }
-                    flag = true;
                 }
 
+                bool flagship = false;
                 // Else go to a cell with smell to kill monster
                 if (m_lfcCellsWithSmell.Any() && !flag)
                 {
-                    ForestCell fcNextCell = m_lfcCellsWithSmell[0];
+                    Random r = new Random();
+                    int index = r.Next(0, m_lfcCellsWithSmell.Count);
+                    ForestCell fcNextCell = m_lfcCellsWithSmell[index];
                     Move paActToMove = new Move(this, fcNextCell);
                     aListActionPossible.Add(paActToMove);
+                    flagship = true;
                 }
-                else
+                if (!flagship && !flag)
                 {
                     // Else try a random remaining cell
                     if (m_lfcCellsSuspicous.Any())
                     {
-                        ForestCell fcNextCell = m_lfcCellsSuspicous[0];
+                        Random r = new Random();
+                        int index = r.Next(0, m_lfcCellsSuspicous.Count);
+                        ForestCell fcNextCell = m_lfcCellsSuspicous[index];
                         Move paActToMove = new Move(this, fcNextCell);
                         aListActionPossible.Add(paActToMove);
                     }
@@ -466,7 +485,7 @@ namespace MagicForest
                     }
                 }
                 // Else try to kill monster
-                if(!flag)
+                if (!flag)
                 {
                     List<ForestCell> lfcTargets = CurrentForestCell.getAdjacentCells();
                     // Remove cell visited just before from targets
@@ -515,11 +534,7 @@ namespace MagicForest
                     //aListActionPossible.Add(paActToMove);
                 }
             }
-            // Wind
-            /*if (p_iStateEnv == 2)
-            {
 
-            }*/
             // Smell + Wind
             if (p_iStateEnv == 3)
             {
@@ -540,21 +555,23 @@ namespace MagicForest
                     }
                 }
                 // Else try to kill monster and wait for result
-                if(!flag)
+                if (!flag)
                 {
                     List<ForestCell> lfcTargets = CurrentForestCell.getAdjacentCells();
                     // Remove cell visited just before from targets
-                    foreach (ForestCell fcItem in lfcTargets)
+                    for (int i = lfcTargets.Count - 1; i >= 0; i--)
                     {
-                        if (Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster == 1)
+                        if (Memory[lfcTargets[i].LineIndex, lfcTargets[i].ColumnIndex].HasNoMonster == 1)
                         {
-                            lfcTargets.Remove(fcItem);
+                            lfcTargets.Remove(lfcTargets[i]);
                         }
                     }
                     // if no more target, try random cell
                     if (!lfcTargets.Any())
                     {
-                        ForestCell fcNextCell = m_lfcCellsSuspicous[0];
+                        Random r = new Random();
+                        int index = r.Next(0, m_lfcCellsSuspicous.Count);
+                        ForestCell fcNextCell = m_lfcCellsSuspicous[index];
                         Move paActToMove = new Move(this, fcNextCell);
                         aListActionPossible.Add(paActToMove);
                     }
@@ -608,12 +625,14 @@ namespace MagicForest
             {
                 m_bStillAlive = false;
                 OnDeath();
+                return null;
             }
             // Hole
-            if (p_iStateEnv == 5)
+            if (p_iStateEnv == 6)
             {
                 m_bStillAlive = false;
                 OnDeath();
+                return null;
             }
 
             return aListActionPossible;
@@ -628,29 +647,36 @@ namespace MagicForest
         {
             List<PossibleAction> lapListPossibleAction = ActionDeclenchable(p_iStateEnv);
 
-            // Initialises the index used to keep track of the best action to perform.
-            int iIndexActionToDo = -1;
-
-            // Each iteration, initialises the worthiness of the action currently evaluated.
-            int iWorthiness = -1;
-
-            for (int i = 0; i < lapListPossibleAction.Count; i++)
+            if (lapListPossibleAction != null)
             {
-                int temp = CalculateWorthiness(lapListPossibleAction[i], m_sGoal, p_iStateEnv);
-                if (iWorthiness < temp)
+                // Initialises the index used to keep track of the best action to perform.
+                int iIndexActionToDo = -1;
+
+                // Each iteration, initialises the worthiness of the action currently evaluated.
+                int iWorthiness = -1;
+
+                for (int i = 0; i < lapListPossibleAction.Count; i++)
                 {
-                    iWorthiness = temp;
-                    // If the current action is the most relevant, we keep its index in the list.
-                    iIndexActionToDo = i;
+                    int temp = CalculateWorthiness(lapListPossibleAction[i], m_sGoal, p_iStateEnv);
+                    if (iWorthiness < temp)
+                    {
+                        iWorthiness = temp;
+                        // If the current action is the most relevant, we keep its index in the list.
+                        iIndexActionToDo = i;
+                    }
                 }
+                // When we went through the whole list, the index returned is the one of the most relevant action.
+                return lapListPossibleAction[iIndexActionToDo];
             }
-            // When we went through the whole list, the index returned is the one of the most relevant action.
-            return lapListPossibleAction[iIndexActionToDo];
+            return null;
         }
 
         public void DoAction(PossibleAction p_paAction)
         {
-            p_paAction.Act();
+            if (p_paAction != null)
+            {
+                p_paAction.Act();
+            }
         }
 
         private int CalculateWorthiness(PossibleAction p_paAction, string p_sMyGoal, int p_iStateEnv)
