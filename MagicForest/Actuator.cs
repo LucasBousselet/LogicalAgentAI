@@ -36,9 +36,12 @@ namespace MagicForest
         }
         */
 
+        public delegate void dlgMove(ForestCell prevForestCell, ForestCell NewForestCell);
+        public static dlgMove OnMove;
+
         public static void Move(Hero p_hHero, ForestCell p_fcDestinationCell)
         {
-            CalculateHCost(p_fcDestinationCell);
+            //CalculateHCost(p_fcDestinationCell);
             int cost = 1/*CalculateCost(p_hHero.CurrentCell, p_fcDestinationCell)*/;
 
             p_hHero.PreviousForestCell = p_hHero.CurrentForestCell;
@@ -47,7 +50,10 @@ namespace MagicForest
 
             p_hHero.CurrentForestCell.AlreadyVisited = true;
             p_hHero.Score -= cost;
-            ResetGridCost();
+
+            OnMove(p_hHero.PreviousForestCell, p_hHero.CurrentForestCell);
+
+            //ResetGridCost();
         }
 
         /*************************************************/

@@ -12,8 +12,9 @@ namespace MagicForest
 
         private static int m_iForestSize = 3;
         private static ForestCell[,] m_afcForest = null;
-        private static Hero steveTheHero = new Hero();
+        private static Hero steveTheHero;
         private static string m_sWhatsOnTheCell = String.Empty;
+        private Grid forestGrid;
 
         public static int ForestSize
         {
@@ -50,10 +51,20 @@ namespace MagicForest
         public MainWindow()
         {
             InitializeComponent();
-            
-            Actuator.OnExit += new Actuator.dlgExit(OnExit);
+
+            CreateForest();
+
+            steveTheHero = new Hero(m_iForestSize, 0);
             steveTheHero.OnDeath += new Hero.dlgDeath(OnDeath);
+
+            Forest[0, 0].AlreadyVisited = true;
+
+            PopulateForest(m_afcForest);
+            CreateGUI();
+
             UpdateGUI();
+            Actuator.OnExit += new Actuator.dlgExit(OnExit);
+            Actuator.OnMove += new Actuator.dlgMove(OnMove);
             //CreateForest();
             //PopulateForest(m_afcForest);
             //CreateGUI();
@@ -68,9 +79,9 @@ namespace MagicForest
         /// </summary>
         public void UpdateGUI()
         {
-            CreateForest();
-            PopulateForest(m_afcForest);
-            CreateGUI();
+            //CreateForest();
+            //PopulateForest(m_afcForest);
+            //CreateGUI();
             ShowForestCellsInGUI();
             EditTextDetails();
             Content = mainGrid;
@@ -79,6 +90,7 @@ namespace MagicForest
         public void IncreaseForestSize()
         {
             m_iForestSize++;
+            //m_afcForest = new ForestCell[m_iForestSize, m_iForestSize];
         }
 
         public void EditTextDetails()
@@ -119,7 +131,13 @@ namespace MagicForest
         /// </summary>
         public void CreateGUI()
         {
-            Grid forestGrid = null;
+            
+            if (forestGrid !=null)
+            {
+                forestGrid.Children.Clear();
+            }
+            mainGrid.Children.Remove(forestGrid);
+
             forestGrid = new Grid();
 
             // Creates the desired number of rows and columns for the grid
@@ -136,6 +154,7 @@ namespace MagicForest
                     // Address the ForestCell [i,j] to the grid row 'i' and column 'j'
                     Grid.SetRow(m_afcForest[i, j], i);
                     Grid.SetColumn(m_afcForest[i, j], j);
+
                     forestGrid.Children.Add(m_afcForest[i, j]);
                 }
                 Grid.SetRow(forestGrid, 0);
@@ -236,8 +255,8 @@ namespace MagicForest
 
             Random random = new Random();
             // We generate a number between 1 and the size of the forest + 1 
-            int portalRow = random.Next(0, m_iForestSize);
-            int portalColumn = random.Next(0, m_iForestSize);
+            int portalRow = random.Next(1, m_iForestSize);
+            int portalColumn = random.Next(1, m_iForestSize);
             pForest[portalRow, portalColumn].AddPortalOnCell();
 
             // We go through all the cells in the forest ...
@@ -245,7 +264,7 @@ namespace MagicForest
             {
                 for (int j = 0; j < m_iForestSize; j++)
                 {
-                    if ((pForest[i, j].HasNothing == true) && !((i == 0) && (j == 0)))
+                    if ((pForest[i, j].HasNothing) && !((i == 0) && (j == 0)))
                     {
                         // and try to populate it if it's empty (with a monster or a hole)
                         PopulateCellRandomly(pForest[i, j], random);
@@ -276,19 +295,56 @@ namespace MagicForest
             }
         }
 
+        public void OnMove(ForestCell prevForestCell, ForestCell NewForestCell)
+        {
+            for (int i = 0; i < m_iForestSize; i++)
+            {
+                for (int j = 0; j < m_iForestSize; j++)
+                {
+                    if (m_afcForest[i, j] == prevForestCell)
+                    {
+                        m_afcForest[i, j].HasHero = false;
+                    }
+                    if (m_afcForest[i, j] == NewForestCell)
+                    {
+                        m_afcForest[i, j].HasHero = true;
+                    }
+                }
+            }
+
+            UpdateGUI();
+        }
+
         public void OnExit()
         {
             IncreaseForestSize();
+
+            CreateForest();
+
+            int score = steveTheHero.Score;
+
+            //Hero.Memory = new MemoryCell[steveTheHero.MemorySize, steveTheHero.MemorySize];
+            //steveTheHero.PopulateMemoryCellMatrix();
+
+            steveTheHero = new Hero(m_iForestSize, score);
+            steveTheHero.OnDeath += new Hero.dlgDeath(OnDeath);
+
+            Forest[0, 0].AlreadyVisited = true;
+
+            PopulateForest(m_afcForest);
+            CreateGUI();
+
             UpdateGUI();
 
-            steveTheHero.CurrentForestCell = MainWindow.Forest[0, 0];
+            steveTheHero.CurrentForestCell = Forest[0, 0];
+            Forest[0, 0].AlreadyVisited = true;
         }
 
         public static void OnDeath()
         {
 
 
-            steveTheHero.CurrentForestCell = MainWindow.Forest[0, 0];
+            steveTheHero.CurrentForestCell = Forest[0, 0];
         }
 
         private void On_DoStuffButtonClick(object sender, RoutedEventArgs e)
