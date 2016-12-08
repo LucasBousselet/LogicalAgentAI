@@ -14,3 +14,19 @@ C:\Users\NG\Google Drive\Mes documents - pro\UQAC\Intelligence artificielle\Proj
 C:\Users\NG\Google Drive\Mes documents - pro\UQAC\Intelligence artificielle\Projet 3 - Agent logique\Magic Forest\MagicForest\obj\x64\Debug\MagicForest.csproj.GenerateResource.Cache
 C:\Users\NG\Google Drive\Mes documents - pro\UQAC\Intelligence artificielle\Projet 3 - Agent logique\Magic Forest\MagicForest\obj\x64\Debug\MagicForest.exe
 C:\Users\NG\Google Drive\Mes documents - pro\UQAC\Intelligence artificielle\Projet 3 - Agent logique\Magic Forest\MagicForest\obj\x64\Debug\MagicForest.pdb
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\bin\x64\Debug\MagicForest.exe.config
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\obj\x64\Debug\MagicForest.exe
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\obj\x64\Debug\MagicForest.pdb
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\bin\x64\Debug\MagicForest.exe
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\bin\x64\Debug\MagicForest.pdb
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\obj\x64\Debug\MagicForest.csprojResolveAssemblyReference.cache
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\obj\x64\Debug\ForestCell.g.cs
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\obj\x64\Debug\MainWindow.g.cs
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\obj\x64\Debug\App.g.cs
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\obj\x64\Debug\MagicForest_MarkupCompile.cache
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\obj\x64\Debug\MagicForest_MarkupCompile.lref
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\obj\x64\Debug\ForestCell.baml
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\obj\x64\Debug\MainWindow.baml
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\obj\x64\Debug\MagicForest.g.resources
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\obj\x64\Debug\MagicForest.Properties.Resources.resources
+C:\Users\Lucas\Documents\Visual Studio 2015\Projects\MagicForest\MagicForest\obj\x64\Debug\MagicForest.csproj.GenerateResource.Cache
