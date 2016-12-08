@@ -13,7 +13,7 @@ namespace MagicForest
         private static int m_iForestSize = 3;
         private static ForestCell[,] m_afcForest = null;
         private static Hero steveTheHero;
-        private static string m_sWhatsOnTheCell = String.Empty;
+        private static string m_sWhatsOnTheCell = string.Empty;
         private Grid forestGrid;
 
         public static int ForestSize
@@ -101,27 +101,27 @@ namespace MagicForest
             ForestCell currentCell = steveTheHero.CurrentForestCell;
             if (currentCell.HasNothing)
             {
-                VerboseCellContent = String.Concat(VerboseCellContent, "- rien de particulier\n");
+                VerboseCellContent = string.Concat(VerboseCellContent, "- rien de particulier\n");
             }
             if (currentCell.HasHole)
             {
-                VerboseCellContent = String.Concat(VerboseCellContent, "- un trou ... Damned ...\n");
+                VerboseCellContent = string.Concat(VerboseCellContent, "- un trou ... Damned ...\n");
             }
             if (currentCell.HasMonster)
             {
-                VerboseCellContent = String.Concat(VerboseCellContent, "- un alien ... Game Over\n");
+                VerboseCellContent = string.Concat(VerboseCellContent, "- un alien ... Game Over\n");
             }
             if (currentCell.HasWind)
             {
-                VerboseCellContent = String.Concat(VerboseCellContent, "- un brusque coup de vent\n");
+                VerboseCellContent = string.Concat(VerboseCellContent, "- un brusque coup de vent\n");
             }
             if (currentCell.HasPoop)
             {
-                VerboseCellContent = String.Concat(VerboseCellContent, "- une odeur étrange\n");
+                VerboseCellContent = string.Concat(VerboseCellContent, "- une odeur étrange\n");
             }
             if (currentCell.HasPortal)
             {
-                VerboseCellContent = String.Concat(VerboseCellContent, "- une douce lumière\n");
+                VerboseCellContent = string.Concat(VerboseCellContent, "- une douce lumière\n");
             }
             currentCellText.Text = VerboseCellContent;
         }
@@ -132,8 +132,8 @@ namespace MagicForest
         /// </summary>
         public void CreateGUI()
         {
-            
-            if (forestGrid !=null)
+
+            if (forestGrid != null)
             {
                 forestGrid.Children.Clear();
             }
@@ -344,11 +344,25 @@ namespace MagicForest
             Forest[0, 0].AlreadyVisited = true;
         }
 
-        public static void OnDeath()
+        public void OnDeath()
         {
+            MessageBox.Show("You unfortunatly dies in agony, maybe next time...",
+                "You died !",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
 
+            m_iForestSize = 3;
+            CreateForest();
 
-            steveTheHero.CurrentForestCell = Forest[0, 0];
+            steveTheHero = new Hero(m_iForestSize, 0);
+            steveTheHero.OnDeath += new Hero.dlgDeath(OnDeath);
+
+            Forest[0, 0].AlreadyVisited = true;
+
+            PopulateForest(m_afcForest);
+            CreateGUI();
+
+            UpdateGUI();
         }
 
         private void On_DoStuffButtonClick(object sender, RoutedEventArgs e)
