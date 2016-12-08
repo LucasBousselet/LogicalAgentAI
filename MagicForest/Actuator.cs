@@ -40,11 +40,11 @@ namespace MagicForest
         public delegate void dlgMove(ForestCell prevForestCell, ForestCell NewForestCell);
         public static dlgMove OnMove;
 
-        public static void Move(Hero p_hHero, ForestCell p_fcDestinationCell)
+        public static void Move(Hero p_hHero, ForestCell p_fcDestinationCell, int cost)
         {
-            InitCost(p_hHero, p_fcDestinationCell);
+            /*InitCost(p_hHero, p_fcDestinationCell);
             int cost = FindPath(p_hHero, p_fcDestinationCell).Count;
-            ResetGridCost();
+            ResetGridCost();*/
 
             p_hHero.PreviousForestCell = p_hHero.CurrentForestCell;
             p_hHero.CurrentForestCell = p_fcDestinationCell;
@@ -58,7 +58,7 @@ namespace MagicForest
 
         /*************************************************/
         // A* search for path cost
-
+        /*
         public static void InitCost(Hero p_hHero, ForestCell p_fcDestinationCell)
         {
             for (int i = 0; i < MainWindow.ForestSize; i++)
@@ -158,7 +158,7 @@ namespace MagicForest
                 path.Reverse();
             }
             return path;
-        }
+        }*/
 
         /*************************************************/
 
@@ -173,9 +173,9 @@ namespace MagicForest
                 p_fcTarget.RemoveMonsterOnCell();
                 OnThrow();
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
-                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
+                //Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].MayContainMonster = -1;
-                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].IsSafe = 1;
+                //Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].IsSafe = 1;
                 p_hHero.CellsOK.Add(p_fcTarget);
                 p_hHero.Score -= 10;
             }
@@ -189,9 +189,9 @@ namespace MagicForest
                 p_fcTarget.RemoveMonsterOnCell();
                 OnThrow();
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
-                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
+                //Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].MayContainMonster = -1;
-                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].IsSafe = 1;
+                //Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].IsSafe = 1;
                 p_hHero.CellsOK.Add(p_fcTarget);
                 p_hHero.Score -= 10;
             }
@@ -205,9 +205,9 @@ namespace MagicForest
                 p_fcTarget.RemoveMonsterOnCell();
                 OnThrow();
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
-                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
+                //Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].MayContainMonster = -1;
-                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].IsSafe = 1;
+                //Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].IsSafe = 1;
                 p_hHero.CellsOK.Add(p_fcTarget);
                 p_hHero.Score -= 10;
             }
@@ -221,9 +221,9 @@ namespace MagicForest
                 p_fcTarget.RemoveMonsterOnCell();
                 OnThrow();
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
-                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
+                //Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].MayContainMonster = -1;
-                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].IsSafe = 1;
+                //Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].IsSafe = 1;
                 p_hHero.CellsOK.Add(p_fcTarget);
                 p_hHero.Score -= 10;
             }

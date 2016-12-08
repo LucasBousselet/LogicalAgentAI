@@ -99,10 +99,12 @@
         private string m_sName = "Move";
 
         private ForestCell m_fcDestination;
+        private int m_iCost;
 
-        public Move(Hero p_hHero, ForestCell p_fcDestinationCell) : base(p_hHero)
+        public Move(Hero p_hHero, ForestCell p_fcDestinationCell, int cost) : base(p_hHero)
         {
             m_fcDestination = p_fcDestinationCell;
+            m_iCost = cost;
         }
 
         public override string Name()
@@ -112,7 +114,7 @@
 
         public override void Act()
         {
-            Actuator.Move(m_hHero, m_fcDestination);
+            Actuator.Move(m_hHero, m_fcDestination, m_iCost);
         }
     }
 

@@ -11,7 +11,7 @@ namespace MagicForest
          * -1 -> false
          * 1 -> true
          * 0 -> unknown */
-        private int m_iIsSafe, m_iMayContainMonster, m_iMayContainHole, m_iContainMonster, m_iContainHole, m_iHasNoMonster, m_iHasNoHole = 0;
+        private int /*m_iIsSafe,*/ m_iMayContainMonster, m_iMayContainHole, /*m_iContainMonster, m_iContainHole,*/ m_iHasNoMonster, m_iHasNoHole = 0;
 
         public int LineIndex
         {
@@ -36,7 +36,7 @@ namespace MagicForest
                 m_iColumnIndex = value;
             }
         }
-
+        /*
         public int IsSafe
         {
             get
@@ -48,7 +48,7 @@ namespace MagicForest
                 m_iIsSafe = value;
             }
         }
-
+        */
         public int MayContainMonster
         {
             get
@@ -72,7 +72,7 @@ namespace MagicForest
                 m_iMayContainHole = value;
             }
         }
-
+        /*
         public int ContainMonster
         {
             get
@@ -96,7 +96,7 @@ namespace MagicForest
                 m_iContainHole = value;
             }
         }
-
+        */
         public int HasNoMonster
         {
             get
@@ -120,7 +120,7 @@ namespace MagicForest
                 m_iHasNoHole = value;
             }
         }
-
+        
         /// <summary>
         /// Find the MemoryCells directly on the left/right/up/down of the current cell
         /// </summary>

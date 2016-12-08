@@ -285,12 +285,12 @@ namespace MagicForest
             int die = r.Next(0, 100);
 
             // There is 15% of chance for the generated number to be in the following range
-            if ((die >= 0) && (die < 10))
+            if ((die >= 0) && (die < 8))
             {
                 pCell.AddMonsterOnCell();
             }
             // There is 15% of chance for the generated number to be in the following range
-            if ((die >= 90) && (die <= 100))
+            if ((die >= 92) && (die <= 100))
             {
                 pCell.AddHoleOnCell();
             }

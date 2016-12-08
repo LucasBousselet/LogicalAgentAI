@@ -78,6 +78,7 @@
     </ApplicationDefinition>
     <Compile Include="Actuator.cs" />
     <Compile Include="MemoryCell.cs" />
+    <Compile Include="Pathfinding.cs" />
     <Compile Include="PossibleAction.cs" />
     <Compile Include="Sensor.cs" />
     <Page Include="ForestCell.xaml">

@@ -190,11 +190,11 @@ namespace MagicForest
                     m_lfcCellsOK = m_lfcCellsOK.Distinct().ToList();
 
                     mcItem.HasNoMonster = 1;
-                    mcItem.ContainMonster = -1;
+                    //mcItem.ContainMonster = -1;
                     mcItem.MayContainMonster = -1;
 
                     mcItem.HasNoHole = 1;
-                    mcItem.ContainHole = -1;
+                    //mcItem.ContainHole = -1;
                     mcItem.MayContainHole = -1;
                 }
 
@@ -225,7 +225,7 @@ namespace MagicForest
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster = -1;
 
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoHole = 1;
-                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].ContainHole = -1;
+                            //Memory[fcItem.LineIndex, fcItem.ColumnIndex].ContainHole = -1;
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainHole = -1;
                         }
                     }
@@ -256,7 +256,7 @@ namespace MagicForest
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoHole = -1;
 
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster = 1;
-                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].ContainMonster = -1;
+                            //Memory[fcItem.LineIndex, fcItem.ColumnIndex].ContainMonster = -1;
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainMonster = -1;
                         }
                     }
@@ -362,40 +362,104 @@ namespace MagicForest
                 // If there are some remaining safe cells, move there
                 if (m_lfcCellsOK.Any())
                 {
+                    int iCost = int.MaxValue;
+                    ForestCell dest = m_lfcCellsOK[new Random().Next(0, m_lfcCellsOK.Count)];
                     //ForestCell fcNextCell;
                     foreach (ForestCell fcItem in m_lfcCellsOK)
                     {
                         if (!fcItem.AlreadyVisited)
                         {
-                            Move paActToMove = new Move(this, fcItem);
-                            aListActionPossible.Add(paActToMove);
-                            flag = true;
-                            break;
+                            Pathfinding.InitCost(this, fcItem);
+                            List<ForestCell> PathFound = Pathfinding.FindPath(this, fcItem);
+                            Pathfinding.ResetGridCost();
+
+
+                            if (PathFound.Count < iCost)
+                            {
+                                dest = fcItem;
+                                iCost = PathFound.Count;
+                                flag = true;
+                            }
                         }
                     }
+                    if (flag)
+                    {
+                        Move paActToMove = new Move(this, dest, iCost);
+                        aListActionPossible.Add(paActToMove);
+                    }
+
+
                 }
 
                 bool flagship = false;
                 // Else go to a cell with smell to kill monster
                 if (m_lfcCellsWithSmell.Any() && !flag)
                 {
+                    int iCost = int.MaxValue;
+                    ForestCell dest = null/*m_lfcCellsWithSmell[new Random().Next(0, m_lfcCellsWithSmell.Count)]*/;
+                    //ForestCell fcNextCell;
+                    foreach (ForestCell fcItem in m_lfcCellsWithSmell)
+                    {
+
+                        Pathfinding.InitCost(this, fcItem);
+                        List<ForestCell> PathFound = Pathfinding.FindPath(this, fcItem);
+                        Pathfinding.ResetGridCost();
+
+
+                        if (PathFound.Count < iCost)
+                        {
+                            dest = fcItem;
+                            iCost = PathFound.Count;
+                            flagship = true;
+                        }
+
+                    }
+                    if (flagship)
+                    {
+                        Move paActToMove = new Move(this, dest, iCost);
+                        aListActionPossible.Add(paActToMove);
+                    }
+
+                    /*
                     Random r = new Random();
                     int index = r.Next(0, m_lfcCellsWithSmell.Count);
                     ForestCell fcNextCell = m_lfcCellsWithSmell[index];
                     Move paActToMove = new Move(this, fcNextCell);
                     aListActionPossible.Add(paActToMove);
-                    flagship = true;
+                    flagship = true;*/
                 }
                 if (!flagship && !flag)
                 {
                     // Else try a random remaining cell
                     if (m_lfcCellsSuspicous.Any())
                     {
-                        Random r = new Random();
-                        int index = r.Next(0, m_lfcCellsSuspicous.Count);
-                        ForestCell fcNextCell = m_lfcCellsSuspicous[index];
-                        Move paActToMove = new Move(this, fcNextCell);
-                        aListActionPossible.Add(paActToMove);
+                        bool flagag = false;
+                        int iCost = int.MaxValue;
+                        ForestCell dest = null/*m_lfcCellsSuspicous[new Random().Next(0, m_lfcCellsSuspicous.Count)]*/;
+                        //ForestCell fcNextCell;
+                        foreach (ForestCell fcItem in m_lfcCellsSuspicous)
+                        {
+                            if (!fcItem.AlreadyVisited)
+                            {
+                                Pathfinding.InitCost(this, fcItem);
+                                List<ForestCell> PathFound = Pathfinding.FindPath(this, fcItem);
+                                Pathfinding.ResetGridCost();
+
+
+                                if (PathFound.Count < iCost)
+                                {
+                                    dest = fcItem;
+                                    iCost = PathFound.Count;
+                                    flagag = true;
+                                }
+                            }
+                        }
+                        if (flagag)
+                        {
+                            Move paActToMove = new Move(this, dest, iCost);
+                            aListActionPossible.Add(paActToMove);
+                        }
+
                     }
                 }
             }
@@ -406,17 +470,31 @@ namespace MagicForest
                 // If there are some remaining safe cells, move there
                 if (m_lfcCellsOK.Any())
                 {
+                    int iCost = int.MaxValue;
+                    ForestCell dest = null/*m_lfcCellsOK[new Random().Next(0, m_lfcCellsOK.Count)]*/;
                     //ForestCell fcNextCell;
                     foreach (ForestCell fcItem in m_lfcCellsOK)
                     {
                         if (!fcItem.AlreadyVisited)
                         {
-                            Move paActToMove = new Move(this, fcItem);
-                            aListActionPossible.Add(paActToMove);
-                            flag = true;
-                            break;
+                            Pathfinding.InitCost(this, fcItem);
+                            List<ForestCell> PathFound = Pathfinding.FindPath(this, fcItem);
+                            Pathfinding.ResetGridCost();
+
+                            if (PathFound.Count < iCost)
+                            {
+                                dest = fcItem;
+                                iCost = PathFound.Count;
+                                flag = true;
+                            }
                         }
                     }
+                    if (flag)
+                    {
+                        Move paActToMove = new Move(this, dest, iCost);
+                        aListActionPossible.Add(paActToMove);
+                    }
+
                 }
                 // Else try to kill monster
                 if (!flag)
@@ -464,7 +542,7 @@ namespace MagicForest
                             }
                         }
                     }
-                    Move paActToMove = new Move(this, lfcTargets[iTargetIndex]);
+                    //Move paActToMove = new Move(this, lfcTargets[iTargetIndex]);
                     //aListActionPossible.Add(paActToMove);
                 }
             }
@@ -476,17 +554,32 @@ namespace MagicForest
                 // If there are some remaining safe cells, move there
                 if (m_lfcCellsOK.Any())
                 {
+                    int iCost = int.MaxValue;
+                    ForestCell dest = null/*m_lfcCellsOK[new Random().Next(0, m_lfcCellsOK.Count)]*/;
                     //ForestCell fcNextCell;
                     foreach (ForestCell fcItem in m_lfcCellsOK)
                     {
                         if (!fcItem.AlreadyVisited)
                         {
-                            Move paActToMove = new Move(this, fcItem);
-                            aListActionPossible.Add(paActToMove);
-                            flag = true;
-                            break;
+                            Pathfinding.InitCost(this, fcItem);
+                            List<ForestCell> PathFound = Pathfinding.FindPath(this, fcItem);
+                            Pathfinding.ResetGridCost();
+
+
+                            if (PathFound.Count < iCost)
+                            {
+                                dest = fcItem;
+                                iCost = PathFound.Count;
+                                flag = true;
+                            }
                         }
                     }
+                    if (flag)
+                    {
+                        Move paActToMove = new Move(this, dest, iCost);
+                        aListActionPossible.Add(paActToMove);
+                    }
+
                 }
                 // Else try to kill monster and wait for result
                 if (!flag)
@@ -503,11 +596,35 @@ namespace MagicForest
                     // if no more target, try random cell
                     if (!lfcTargets.Any())
                     {
-                        Random r = new Random();
-                        int index = r.Next(0, m_lfcCellsSuspicous.Count);
-                        ForestCell fcNextCell = m_lfcCellsSuspicous[index];
-                        Move paActToMove = new Move(this, fcNextCell);
-                        aListActionPossible.Add(paActToMove);
+                        if (m_lfcCellsSuspicous.Any())
+                        {
+                            bool flagship = false;
+                            int iCost = int.MaxValue;
+                            ForestCell dest = null/*m_lfcCellsSuspicous[new Random().Next(0, m_lfcCellsSuspicous.Count)]*/;
+                            //ForestCell fcNextCell;
+                            foreach (ForestCell fcItem in m_lfcCellsSuspicous)
+                            {
+                                if (!fcItem.AlreadyVisited)
+                                {
+                                    Pathfinding.InitCost(this, fcItem);
+                                    List<ForestCell> PathFound = Pathfinding.FindPath(this, fcItem);
+                                    Pathfinding.ResetGridCost();
+
+                                    if (PathFound.Count < iCost)
+                                    {
+                                        dest = fcItem;
+                                        iCost = PathFound.Count;
+                                        flagship = true;
+                                    }
+                                }
+                            }
+                            if (flagship)
+                            {
+                                Move paActToMove = new Move(this, dest, iCost);
+                                aListActionPossible.Add(paActToMove);
+                            }
+
+                        }
                     }
                     else
                     {
