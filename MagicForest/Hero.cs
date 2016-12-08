@@ -10,8 +10,6 @@ namespace MagicForest
 {
     public class Hero
     {
-        //private string m_sDirectionFacing;
-        //public readonly string[] m_asPossibleDirections = new string[4] { "top", "right", "bottom", "left" };
         private int m_iScore;
         private ForestCell m_fcCurrentForestCell;
         private ForestCell m_fcPreviousForestCell;
@@ -35,10 +33,6 @@ namespace MagicForest
         // New delegate for player death
         public delegate void dlgDeath();
         public dlgDeath OnDeath;
-
-        //public delegate void WatchingExitEvent();
-        //public event WatchingExitEvent anEvent;
-        //WatchingExitEvent actualWatcherForExit = new WatchingExitEvent(On_PortalFound);
 
         /// <summary>
         /// 2-dimensional array of the knowledge our hero has of the current environment
@@ -109,20 +103,6 @@ namespace MagicForest
             }
         }
 
-        /*
-        public string DirectionFacing
-        {
-            get
-            {
-                return m_sDirectionFacing;
-            }
-            set
-            {
-                m_sDirectionFacing = value;
-            }
-        }
-        */
-
         public int Score
         {
             get
@@ -175,52 +155,6 @@ namespace MagicForest
                 }
             }
         }
-
-        /*   public ForestCell getFrontCell()
-           {
-               ForestCell fcResult = null;
-               switch (m_sDirectionFacing)
-               {
-                   case "top":
-                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex - 1, m_fcCurrentCell.LineIndex];
-                       break;
-                   case "right":
-                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex + 1];
-                       break;
-                   case "bottom":
-                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex + 1, m_fcCurrentCell.LineIndex];
-                       break;
-                   case "left":
-                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex - 1];
-                       break;
-                   default:
-                       break;
-               }
-               return fcResult;
-           }
-
-           public ForestCell getBackCell()
-           {
-               ForestCell fcResult = null;
-               switch (m_sDirectionFacing)
-               {
-                   case "top":
-                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex + 1, m_fcCurrentCell.LineIndex];
-                       break;
-                   case "right":
-                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex - 1];
-                       break;
-                   case "bottom":
-                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex - 1, m_fcCurrentCell.LineIndex];
-                       break;
-                   case "left":
-                       fcResult = MainWindow.Forest[m_fcCurrentCell.LineIndex, m_fcCurrentCell.LineIndex + 1];
-                       break;
-                   default:
-                       break;
-               }
-               return fcResult;
-           }*/
 
         public bool AmIAlive()
         {
