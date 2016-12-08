@@ -217,7 +217,7 @@ namespace MagicForest
         {
             // If the cell already does not contain a monster, we don't do anything
             // (the case may arise when the hero throws a rock on an empty case)
-            if (HasMonster == false)
+            if (!m_bHasMonster)
             {
                 return;
             }
@@ -228,10 +228,10 @@ namespace MagicForest
             List<ForestCell> listOfSmellyCaseNeighbors = new List<ForestCell>();
             bool monstersAreStillHere = false;
 
-            HasMonster = false;
+            m_bHasMonster = false;
             // We know for sure it has nothing after the monster is killed,
             // because a cell can not contain a monster and something else
-            HasNothing = true;
+            m_bHasNothing = true;
             listOfNeighbors = getAdjacentCells();
             // For each neighbors of the case where we killed the monster ...
             for (int i = 0; i < listOfNeighbors.Count(); i++)
@@ -242,12 +242,12 @@ namespace MagicForest
                 for (int j = 0; j < listOfSmellyCaseNeighbors.Count(); j++)
                 {
                     // ... if it still has a monster ...
-                    if (listOfSmellyCaseNeighbors[j].HasMonster)
+                    if (listOfSmellyCaseNeighbors[j].m_bHasMonster)
                     {
                         monstersAreStillHere = true;
                     }
                 }
-                if (monstersAreStillHere == false)
+                if (!monstersAreStillHere)
                 {
                     // ... before at last removing the poop !
                     listOfNeighbors[i].RemovePoop();

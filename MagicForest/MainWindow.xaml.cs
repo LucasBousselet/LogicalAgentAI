@@ -65,6 +65,7 @@ namespace MagicForest
             UpdateGUI();
             Actuator.OnExit += new Actuator.dlgExit(OnExit);
             Actuator.OnMove += new Actuator.dlgMove(OnMove);
+            Actuator.OnThrow += new Actuator.dlgRefreshAfterThrow(OnThrow);
             //CreateForest();
             //PopulateForest(m_afcForest);
             //CreateGUI();
@@ -284,7 +285,7 @@ namespace MagicForest
             int die = r.Next(0, 100);
 
             // There is 15% of chance for the generated number to be in the following range
-            if ((die >= 0) && (die < 10))
+            if ((die >= 0) && (die < 80))
             {
                 pCell.AddMonsterOnCell();
             }
@@ -293,6 +294,11 @@ namespace MagicForest
             {
                 pCell.AddHoleOnCell();
             }
+        }
+
+        public void OnThrow()
+        {
+            //UpdateGUI();
         }
 
         public void OnMove(ForestCell prevForestCell, ForestCell NewForestCell)
@@ -312,7 +318,7 @@ namespace MagicForest
                 }
             }
 
-            UpdateGUI();
+            //UpdateGUI();
         }
 
         public void OnExit()
@@ -334,8 +340,6 @@ namespace MagicForest
             PopulateForest(m_afcForest);
             CreateGUI();
 
-            UpdateGUI();
-
             steveTheHero.CurrentForestCell = Forest[0, 0];
             Forest[0, 0].AlreadyVisited = true;
         }
@@ -350,6 +354,7 @@ namespace MagicForest
         private void On_DoStuffButtonClick(object sender, RoutedEventArgs e)
         {
             steveTheHero.Inference();
+            UpdateGUI();
         }
     }
 }

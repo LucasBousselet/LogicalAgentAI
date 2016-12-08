@@ -153,15 +153,20 @@ namespace MagicForest
 
         /*************************************************/
 
+        public delegate void dlgRefreshAfterThrow();
+        public static dlgRefreshAfterThrow OnThrow;
+
         public static void ThrowRockLeft(Hero p_hHero)
         {
             if (p_hHero.CurrentForestCell.LineIndex - 1 > 0)
             {
-                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentForestCell.LineIndex - 1, p_hHero.CurrentForestCell.ColumnIndex];
+                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentForestCell.LineIndex, p_hHero.CurrentForestCell.ColumnIndex - 1];
                 p_fcTarget.RemoveMonsterOnCell();
+                OnThrow();
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].MayContainMonster = -1;
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].IsSafe = 1;
                 p_hHero.CellsOK.Add(p_fcTarget);
                 p_hHero.Score -= 10;
             }
@@ -171,11 +176,14 @@ namespace MagicForest
         {
             if (p_hHero.CurrentForestCell.LineIndex + 1 > 0)
             {
-                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentForestCell.LineIndex + 1, p_hHero.CurrentForestCell.ColumnIndex];
+                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentForestCell.LineIndex, p_hHero.CurrentForestCell.ColumnIndex + 1];
                 p_fcTarget.RemoveMonsterOnCell();
+                OnThrow();
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].MayContainMonster = -1;
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].IsSafe = 1;
+                p_hHero.CellsOK.Add(p_fcTarget);
                 p_hHero.Score -= 10;
             }
         }
@@ -184,11 +192,14 @@ namespace MagicForest
         {
             if (p_hHero.CurrentForestCell.ColumnIndex - 1 > 0)
             {
-                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentForestCell.LineIndex, p_hHero.CurrentForestCell.ColumnIndex - 1];
+                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentForestCell.LineIndex - 1, p_hHero.CurrentForestCell.ColumnIndex];
                 p_fcTarget.RemoveMonsterOnCell();
+                OnThrow();
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].MayContainMonster = -1;
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].IsSafe = 1;
+                p_hHero.CellsOK.Add(p_fcTarget);
                 p_hHero.Score -= 10;
             }
         }
@@ -197,11 +208,14 @@ namespace MagicForest
         {
             if (p_hHero.CurrentForestCell.ColumnIndex + 1 > 0)
             {
-                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentForestCell.LineIndex, p_hHero.CurrentForestCell.ColumnIndex + 1];
+                ForestCell p_fcTarget = MainWindow.Forest[p_hHero.CurrentForestCell.LineIndex + 1, p_hHero.CurrentForestCell.ColumnIndex];
                 p_fcTarget.RemoveMonsterOnCell();
+                OnThrow();
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].HasNoMonster = 1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].ContainMonster = -1;
                 Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].MayContainMonster = -1;
+                Hero.Memory[p_fcTarget.LineIndex, p_fcTarget.ColumnIndex].IsSafe = 1;
+                p_hHero.CellsOK.Add(p_fcTarget);
                 p_hHero.Score -= 10;
             }
         }

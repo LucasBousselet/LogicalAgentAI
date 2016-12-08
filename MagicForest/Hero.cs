@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -280,28 +281,32 @@ namespace MagicForest
                         MemoryCells.Remove(mcItem);
                     }*/
                     // Check in neighboor cell isn't already ok
-                    List<ForestCell> fc = m_fcCurrentForestCell.getAdjacentCells();
-                    m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
+                    List<ForestCell> fcNeighboorForestCells = m_fcCurrentForestCell.getAdjacentCells();
+                    //m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
 
-                    foreach (ForestCell fcItem in m_lfcCellsOK)
+                    foreach (ForestCell fcItem in fcNeighboorForestCells)
                     {
-                        if (MemoryCells[i].LineIndex == fcItem.LineIndex && MemoryCells[i].ColumnIndex == fcItem.ColumnIndex)
+                        if (!m_lfcCellsOK.Contains(fcItem))
                         {
-                            MemoryCells.Remove(MemoryCells[i]);
-                            fc.Remove(fcItem);
+                            m_lfcCellsSuspicous.Add(fcItem);
+
+                            // Update memory cells
+                            MemoryCells[i].MayContainMonster = 1;
+                            MemoryCells[i].HasNoMonster = -1;
+
+                            MemoryCells[i].HasNoHole = 1;
+                            MemoryCells[i].ContainHole = -1;
+                            MemoryCells[i].MayContainHole = -1;
                         }
                     }
-
-                    // Add cells to suspicious cells
-                    //m_lfcCellsSuspicous.AddRange(m_fcCurrentCell.getAdjacentCells());
-
+                    /*
                     // Update memory cells
                     MemoryCells[i].MayContainMonster = 1;
                     MemoryCells[i].HasNoMonster = -1;
 
                     MemoryCells[i].HasNoHole = 1;
                     MemoryCells[i].ContainHole = -1;
-                    MemoryCells[i].MayContainHole = -1;
+                    MemoryCells[i].MayContainHole = -1;*/
                 }
 
                 iResultState = 1;
@@ -366,7 +371,7 @@ namespace MagicForest
 
                 iResultState = 3;
             }
-            if (m_bLightDetected && !m_bWindDetected && !m_bSmellDetected)
+            if (m_bLightDetected)
             {
                 iResultState = 4;
             }
@@ -474,25 +479,28 @@ namespace MagicForest
                     if (lfcTargets[iTargetIndex].LineIndex < m_fcCurrentForestCell.LineIndex)
                     {
                         aListActionPossible.Add(paActToThrowRockLeft);
+                        Debug.WriteLine("Throw rock left");
                     }
                     else
                     {
                         if (lfcTargets[iTargetIndex].LineIndex > m_fcCurrentForestCell.LineIndex)
                         {
                             aListActionPossible.Add(paActToThrowRockRight);
-
+                            Debug.WriteLine("Throw rock right");
                         }
                         else
                         {
                             if (lfcTargets[iTargetIndex].ColumnIndex < m_fcCurrentForestCell.ColumnIndex)
                             {
                                 aListActionPossible.Add(paActToThrowRockTop);
+                                Debug.WriteLine("Throw rock top");
                             }
                             else
                             {
                                 if (lfcTargets[iTargetIndex].ColumnIndex > m_fcCurrentForestCell.ColumnIndex)
                                 {
                                     aListActionPossible.Add(paActToThrowRockBottom);
+                                    Debug.WriteLine("Throw rock bottom");
                                 }
                             }
                         }
@@ -551,12 +559,14 @@ namespace MagicForest
                         if (lfcTargets[iTargetIndex].LineIndex < m_fcCurrentForestCell.LineIndex)
                         {
                             aListActionPossible.Add(paActToThrowRockLeft);
+                            Debug.WriteLine("Throw rock left");
                         }
                         else
                         {
                             if (lfcTargets[iTargetIndex].LineIndex > m_fcCurrentForestCell.LineIndex)
                             {
                                 aListActionPossible.Add(paActToThrowRockRight);
+                                Debug.WriteLine("Throw rock right");
 
                             }
                             else
@@ -564,12 +574,14 @@ namespace MagicForest
                                 if (lfcTargets[iTargetIndex].ColumnIndex < m_fcCurrentForestCell.ColumnIndex)
                                 {
                                     aListActionPossible.Add(paActToThrowRockTop);
+                                    Debug.WriteLine("Throw rock top");
                                 }
                                 else
                                 {
                                     if (lfcTargets[iTargetIndex].ColumnIndex > m_fcCurrentForestCell.ColumnIndex)
                                     {
                                         aListActionPossible.Add(paActToThrowRockBottom);
+                                        Debug.WriteLine("Throw rock bottom");
                                     }
                                 }
                             }
