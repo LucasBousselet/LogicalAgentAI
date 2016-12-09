@@ -2,17 +2,30 @@
 
 namespace MagicForest
 {
+    /// <summary>
+    /// Cell used to create a memory cell.
+    /// </summary>
     public class MemoryCell
     {
+        /// <summary>
+        /// Memory cell line index.
+        /// </summary>
         private int m_iLineIndex;
+        /// <summary>
+        /// Memory cell column index.
+        /// </summary>
         private int m_iColumnIndex;
 
         /* for all integers :
          * -1 -> false
          * 1 -> true
-         * 0 -> unknown */
-        private int /*m_iIsSafe,*/ m_iMayContainMonster, m_iMayContainHole, /*m_iContainMonster, m_iContainHole,*/ m_iHasNoMonster, m_iHasNoHole = 0;
+         * 0 -> unknown 
+         */
+        private int m_iMayContainAlien, m_iMayContainHole, m_iHasNoAlien, m_iHasNoHole, m_iIsSafe = 0;
 
+        /// <summary>
+        /// Get / set the m_iLineIndex.
+        /// </summary>
         public int LineIndex
         {
             get
@@ -25,6 +38,9 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get / set the m_iColumnIndex.
+        /// </summary>
         public int ColumnIndex
         {
             get
@@ -36,7 +52,10 @@ namespace MagicForest
                 m_iColumnIndex = value;
             }
         }
-        /*
+
+        /// <summary>
+        /// Get / set the m_iIsSafe.
+        /// </summary>
         public int IsSafe
         {
             get
@@ -48,19 +67,25 @@ namespace MagicForest
                 m_iIsSafe = value;
             }
         }
-        */
-        public int MayContainMonster
+
+        /// <summary>
+        /// Get / set the m_iMayContainAlien.
+        /// </summary>
+        public int MayContainAlien
         {
             get
             {
-                return m_iMayContainMonster;
+                return m_iMayContainAlien;
             }
             set
             {
-                m_iMayContainMonster = value;
+                m_iMayContainAlien = value;
             }
         }
 
+        /// <summary>
+        /// Get / set the m_iMayContainHole.
+        /// </summary>
         public int MayContainHole
         {
             get
@@ -72,43 +97,25 @@ namespace MagicForest
                 m_iMayContainHole = value;
             }
         }
-        /*
-        public int ContainMonster
+
+        /// <summary>
+        /// Get / set the m_iHasNoAlien.
+        /// </summary>
+        public int HasNoAlien
         {
             get
             {
-                return m_iContainMonster;
+                return m_iHasNoAlien;
             }
             set
             {
-                m_iContainMonster = value;
+                m_iHasNoAlien = value;
             }
         }
 
-        public int ContainHole
-        {
-            get
-            {
-                return m_iContainHole;
-            }
-            set
-            {
-                m_iContainHole = value;
-            }
-        }
-        */
-        public int HasNoMonster
-        {
-            get
-            {
-                return m_iHasNoMonster;
-            }
-            set
-            {
-                m_iHasNoMonster = value;
-            }
-        }
-
+        /// <summary>
+        /// Get / set the m_iHasNoHole.
+        /// </summary>
         public int HasNoHole
         {
             get
@@ -120,11 +127,11 @@ namespace MagicForest
                 m_iHasNoHole = value;
             }
         }
-        
+
         /// <summary>
-        /// Find the MemoryCells directly on the left/right/up/down of the current cell
+        /// Find the MemoryCells directly on the left/right/up/down of the current cell.
         /// </summary>
-        /// <returns>A list of the cells (up to 4) neighbors of the current cell</returns>
+        /// <returns> A list of the cells (up to 4) neighbors of the current cell. </returns>
         public List<MemoryCell> getAdjacentMemoryCells()
         {
             List<MemoryCell> lmcResult = new List<MemoryCell>();
@@ -149,6 +156,9 @@ namespace MagicForest
             return lmcResult;
         }
 
+        /// <summary>
+        /// Create a new memory cell.
+        /// </summary>
         public MemoryCell()
         {
         }

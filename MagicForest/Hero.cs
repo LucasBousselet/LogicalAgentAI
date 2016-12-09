@@ -2,43 +2,79 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace MagicForest
 {
+    /// <summary>
+    /// Class used to handle the behavior of the hero.
+    /// </summary>
     public class Hero
     {
+        /// <summary>
+        /// Hero score.
+        /// </summary>
         private int m_iScore;
+        /// <summary>
+        /// Hero current cell.
+        /// </summary>
         private ForestCell m_fcCurrentForestCell;
+        /// <summary>
+        /// Hero previous cell.
+        /// </summary>
         private ForestCell m_fcPreviousForestCell;
-
+        /// <summary>
+        /// If hero is still alive.
+        /// </summary>
         private bool m_bStillAlive = true;
-
+        /// <summary>
+        /// Result of checking the cell content : hasNothing.
+        /// </summary>
         private bool m_bNothing = false;
-        private bool m_bSmellDetected = false;
+        /// <summary>
+        /// Result of checking the cell content : hasRadiation.
+        /// </summary>
+        private bool m_bRadiationDetected = false;
+        /// <summary>
+        /// Result of checking the cell content : hasWind.
+        /// </summary>
         private bool m_bWindDetected = false;
+        /// <summary>
+        /// Result of checking the cell content : hasLight.
+        /// </summary>
         private bool m_bLightDetected = false;
-
+        /// <summary>
+        /// Set hero goal.
+        /// </summary>
         private string m_sGoal = "GETOUTOMG!";
 
-        private MemoryCell m_mcCurrentMemoryCell;
-
-        private List<ForestCell> m_lfcCellsOK = new List<ForestCell>();
-        private List<ForestCell> m_lfcCellsSuspicous = new List<ForestCell>();
-        private List<ForestCell> m_lfcCellsWithSmell = new List<ForestCell>();
-        private int m_iMemorySize;
-
-        // New delegate for player death
-        public delegate void dlgDeath();
-        public dlgDeath OnDeath;
-
         /// <summary>
-        /// 2-dimensional array of the knowledge our hero has of the current environment
+        /// 2-dimensional array of the knowledge our hero has of the current environment.
         /// </summary>
         private static MemoryCell[,] m_lmcMemory;
+        /// <summary>
+        /// Set hero current memory cell.
+        /// </summary>
+        /// <summary>
+        /// Current memory size.
+        /// </summary>
+        private int m_iMemorySize;
+        private MemoryCell m_mcCurrentMemoryCell;
+        /// <summary>
+        /// List of OK cells.
+        /// </summary>
+        private List<ForestCell> m_lfcCellsOK = new List<ForestCell>();
+        /// <summary>
+        /// List of suspicious cells.
+        /// </summary>
+        private List<ForestCell> m_lfcCellsSuspicous = new List<ForestCell>();
+        /// <summary>
+        /// List of cells with radiation.
+        /// </summary>
+        private List<ForestCell> m_lfcCellsWithRadiation = new List<ForestCell>();
 
+        /// <summary>
+        /// Get / set the m_mcCurrentMemoryCell.
+        /// </summary>
         public MemoryCell CurrentMemoryCell
         {
             get
@@ -51,6 +87,9 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get / set the m_fcPreviousForestCell.
+        /// </summary>
         public ForestCell PreviousForestCell
         {
             get
@@ -63,6 +102,9 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get / set the m_lfcCellsOK.
+        /// </summary>
         public List<ForestCell> CellsOK
         {
             get
@@ -71,6 +113,9 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get / set the m_lfcCellsSuspicous.
+        /// </summary>
         public List<ForestCell> CellsSuspicous
         {
             get
@@ -79,6 +124,9 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get / set the m_lmcMemory.
+        /// </summary>
         public static MemoryCell[,] Memory
         {
             get
@@ -91,6 +139,9 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get / set the m_iMemorySize.
+        /// </summary>
         public int MemorySize
         {
             get
@@ -103,6 +154,9 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get / set the m_iScore.
+        /// </summary>
         public int Score
         {
             get
@@ -115,6 +169,9 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get / set the m_fcCurrentForestCell.
+        /// </summary>
         public ForestCell CurrentForestCell
         {
             get
@@ -127,19 +184,22 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Create a new hero.
+        /// </summary>
+        /// <param name="memSize"> Hero's Memory size. </param>
+        /// <param name="Score"> Hero's score. </param>
         public Hero(int memSize, int Score)
         {
-            //m_sDirectionFacing = m_asPossibleDirections[1];
             m_iScore = 0;
             m_iMemorySize = memSize;
             m_iScore = Score;
-            //m_fcCurrentForestCell = MainWindow.Forest[0, 0];
             PopulateMemoryCellMatrix();
             m_mcCurrentMemoryCell = Memory[0, 0];
         }
 
         /// <summary>
-        /// Puts MemoryCells inside the matrix of MemoryCell the hero has of his environment
+        /// Puts MemoryCells inside the matrix of MemoryCell the hero has of his environment.
         /// </summary>
         public void PopulateMemoryCellMatrix()
         {
@@ -156,61 +216,72 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Check if agent is still alive.
+        /// </summary>
+        /// <returns> true if the agent is alive, false otherwise. </returns>
         public bool AmIAlive()
         {
             return m_bStillAlive;
         }
 
+        /// <summary>
+        /// Get the environment state from sensors.
+        /// </summary>
         public void GetEnvironmentState()
         {
             m_bNothing = Sensor.HasNothing(m_fcCurrentForestCell);
             m_bLightDetected = Sensor.HasLight(m_fcCurrentForestCell);
-            m_bSmellDetected = Sensor.HasSmell(m_fcCurrentForestCell);
+            m_bRadiationDetected = Sensor.HasRadiation(m_fcCurrentForestCell);
             m_bWindDetected = Sensor.HasWind(m_fcCurrentForestCell);
         }
 
+        /// <summary>
+        /// Update memory cell.
+        /// </summary>
+        /// <returns> The state we are currently in. </returns>
         public int UpdateMyState()
         {
             int iResultState = -1;
 
+            // If the cell is empty.
             if (m_bNothing)
             {
-                // Remove from list of cells with smell
-                if (m_lfcCellsWithSmell.Contains(CurrentForestCell))
+                // Remove from list of cells with radiation.
+                if (m_lfcCellsWithRadiation.Contains(CurrentForestCell))
                 {
-                    m_lfcCellsWithSmell.Remove(CurrentForestCell);
+                    m_lfcCellsWithRadiation.Remove(CurrentForestCell);
                 }
 
-                // Update Cell with knowledge that it's empty
+                // Update Cell with knowledge that it's empty.
                 List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
                 foreach (MemoryCell mcItem in MemoryCells)
                 {
                     m_lfcCellsOK.AddRange(m_fcCurrentForestCell.getAdjacentCells());
-                    // Remove duplicates
+                    // Remove duplicates.
                     m_lfcCellsOK = m_lfcCellsOK.Distinct().ToList();
 
-                    mcItem.HasNoMonster = 1;
-                    //mcItem.ContainMonster = -1;
-                    mcItem.MayContainMonster = -1;
-
+                    // Note that we are sure that there is no alien here.
+                    mcItem.HasNoAlien = 1;
+                    mcItem.MayContainAlien = -1;
+                    // Note that we are sure that there is no hole here.
                     mcItem.HasNoHole = 1;
-                    //mcItem.ContainHole = -1;
                     mcItem.MayContainHole = -1;
                 }
 
                 iResultState = 0;
             }
 
-            if (m_bSmellDetected && !m_bWindDetected && !m_bLightDetected)
+            if (m_bRadiationDetected && !m_bWindDetected && !m_bLightDetected)
             {
-                // Add cell to radList
-                m_lfcCellsWithSmell.Add(m_fcCurrentForestCell);
+                // Add cell to radList.
+                m_lfcCellsWithRadiation.Add(m_fcCurrentForestCell);
 
-                // Get the neighboor cells from current cell
+                // Get the neighboor cells from current cell.
                 List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
                 for (int i = MemoryCells.Count - 1; i >= 0; i--)
                 {
-                    // Check in neighboor cell isn't already ok
+                    // Check in neighboor cell isn't already ok.
                     List<ForestCell> fcNeighboorForestCells = m_fcCurrentForestCell.getAdjacentCells();
 
                     foreach (ForestCell fcItem in fcNeighboorForestCells)
@@ -220,12 +291,12 @@ namespace MagicForest
                             m_lfcCellsSuspicous.Add(fcItem);
                             m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
 
-                            // Update memory cells
-                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainMonster = 1;
-                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster = -1;
+                            // Note that there may be an alien around.
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainAlien = 1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoAlien = -1;
 
+                            // Note that we are sure that there is no hole here.
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoHole = 1;
-                            //Memory[fcItem.LineIndex, fcItem.ColumnIndex].ContainHole = -1;
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainHole = -1;
                         }
                     }
@@ -233,7 +304,7 @@ namespace MagicForest
 
                 iResultState = 1;
             }
-            if (m_bWindDetected && !m_bSmellDetected && !m_bLightDetected)
+            if (m_bWindDetected && !m_bRadiationDetected && !m_bLightDetected)
             {
                 // Get the neighboor cells from current cell
                 List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
@@ -246,418 +317,360 @@ namespace MagicForest
                     {
                         if (!m_lfcCellsOK.Contains(fcItem))
                         {
+                            // Add the cell neighboors as suspicious.
                             m_lfcCellsSuspicous.Add(fcItem);
                             m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
 
-                            //Memory[fcItem.LineIndex, fcItem.ColumnIndex]
-
-                            // Update memory cells
+                            // Note that there may be a hole around.
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainHole = 1;
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoHole = -1;
 
-                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster = 1;
-                            //Memory[fcItem.LineIndex, fcItem.ColumnIndex].ContainMonster = -1;
-                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainMonster = -1;
+                            // Note that we are sure that there is no alien here.
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoAlien = 1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainAlien = -1;
                         }
                     }
                 }
 
                 iResultState = 2;
             }
-            if (m_bWindDetected && m_bSmellDetected && !m_bLightDetected)
+            if (m_bWindDetected && m_bRadiationDetected && !m_bLightDetected)
             {
-                // Get the neighboor cells from current cell
+                // Get the neighboor cells from current cell.
                 List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
                 for (int i = MemoryCells.Count - 1; i >= 0; i--)
                 {
-                    // Check in neighboor cell isn't already ok
+                    // Check in neighboor cell isn't already ok.
                     List<ForestCell> fcNeighboorForestCells = m_fcCurrentForestCell.getAdjacentCells();
 
                     foreach (ForestCell fcItem in fcNeighboorForestCells)
                     {
                         if (!m_lfcCellsOK.Contains(fcItem))
                         {
+                            // Add the cell neighboors as suspicious.
                             m_lfcCellsSuspicous.Add(fcItem);
                             m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
 
-                            //Memory[fcItem.LineIndex, fcItem.ColumnIndex]
-
-                            // Update memory cells
+                            // Note that there may be a hole around.
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainHole = 1;
                             Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoHole = -1;
 
-                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainMonster = 1;
-                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoMonster = -1;
+                            // Note that there may be an alien around.
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].MayContainAlien = 1;
+                            Memory[fcItem.LineIndex, fcItem.ColumnIndex].HasNoAlien = -1;
 
                         }
                     }
                 }
-
-                /*
-                // Get the neighboor cells from current cell
-                List<MemoryCell> MemoryCells = m_lmcMemory[m_mcCurrentMemoryCell.LineIndex, m_mcCurrentMemoryCell.ColumnIndex].getAdjacentMemoryCells();
-                for (int i = MemoryCells.Count - 1; i >= 0; i--)
-                {
-                    // Check in neighboor cell isn't already ok
-                    foreach (ForestCell fcItem in m_lfcCellsOK)
-                    {
-                        if (MemoryCells[i].LineIndex == fcItem.LineIndex && MemoryCells[i].ColumnIndex == fcItem.ColumnIndex)
-                        {
-                            MemoryCells.Remove(MemoryCells[i]);
-                        }
-                    }
-
-                    // Add ramaining cells to suspicious cells
-                    m_lfcCellsSuspicous.AddRange(m_fcCurrentForestCell.getAdjacentCells());
-                    m_lfcCellsSuspicous = m_lfcCellsSuspicous.Distinct().ToList();
-
-                    // Update memory cells
-                    MemoryCells[i].MayContainHole = 1;
-                    MemoryCells[i].HasNoHole = -1;
-
-                    MemoryCells[i].MayContainMonster = 1;
-                    MemoryCells[i].HasNoMonster = -1;
-                }
-                */
 
                 iResultState = 3;
             }
+            // If we detect a portal.
             if (m_bLightDetected)
             {
                 iResultState = 4;
-            }
-            if (m_fcCurrentForestCell.HasMonster)
-            {
-                iResultState = 5;
-            }
-            if (m_fcCurrentForestCell.HasHole)
-            {
-                iResultState = 6;
             }
 
             return iResultState;
         }
 
+        /// <summary>
+        /// Infere the possible action from the memory and the current cell state.
+        /// </summary>
+        /// <param name="p_iStateEnv"> Current cell state. </param>
+        /// <returns> A list of PossibleAction. </returns>
         private List<PossibleAction> ActionDeclenchable(int p_iStateEnv)
         {
-            /*
-            TurnLeft apActToTurnLeft = new TurnLeft(this);
-            TurnRight apActToTurnRIght = new TurnRight(this);
-            GoBackward apActToGoBackward = new GoBackward(this);
-            GoForward apActToGoForward = new GoForward(this);
-            */
-            //Move paActToMove = new Move(this);
             ThrowRockLeft paActToThrowRockLeft = new ThrowRockLeft(this);
             ThrowRockRight paActToThrowRockRight = new ThrowRockRight(this);
             ThrowRockTop paActToThrowRockTop = new ThrowRockTop(this);
             ThrowRockBottom paActToThrowRockBottom = new ThrowRockBottom(this);
             Exit paActToExit = new Exit(this);
 
-            List<PossibleAction> aListActionPossible = new List<PossibleAction>();
+            List<PossibleAction> aListPossibleAction = new List<PossibleAction>();
 
-            // Empty cell or wind
+            // if the current cell is empty cell or with wind
             if (p_iStateEnv == 0 || p_iStateEnv == 2)
             {
-                bool flag = false;
-                // If there are some remaining safe cells, move there
+                bool bFlagOK = false;
+                // If there are some remaining safe cells, move there.
                 if (m_lfcCellsOK.Any())
                 {
                     int iCost = int.MaxValue;
-                    ForestCell dest = m_lfcCellsOK[new Random().Next(0, m_lfcCellsOK.Count)];
-                    //ForestCell fcNextCell;
-                    foreach (ForestCell fcItem in m_lfcCellsOK)
+                    ForestCell fcDestination = m_lfcCellsOK[new Random().Next(0, m_lfcCellsOK.Count)];
+                    foreach (ForestCell fcOK in m_lfcCellsOK)
                     {
-                        if (!fcItem.AlreadyVisited)
+                        if (!fcOK.AlreadyVisited)
                         {
-                            Pathfinding.InitCost(this, fcItem);
-                            List<ForestCell> PathFound = Pathfinding.FindPath(this, fcItem);
+                            Pathfinding.InitCost(this, fcOK);
+                            // Find the fastest safe path to the destination cell.
+                            List<ForestCell> PathFound = Pathfinding.FindPath(this, fcOK);
                             Pathfinding.ResetGridCost();
-
 
                             if (PathFound.Count < iCost)
                             {
-                                dest = fcItem;
+                                fcDestination = fcOK;
                                 iCost = PathFound.Count;
-                                flag = true;
+                                bFlagOK = true;
                             }
                         }
                     }
-                    if (flag)
+                    if (bFlagOK)
                     {
-                        Move paActToMove = new Move(this, dest, iCost);
-                        aListActionPossible.Add(paActToMove);
+                        Move paActToMove = new Move(this, fcDestination, iCost);
+                        aListPossibleAction.Add(paActToMove);
                     }
-
-
                 }
 
-                bool flagship = false;
-                // Else go to a cell with smell to kill monster
-                if (m_lfcCellsWithSmell.Any() && !flag)
+                bool bFlagSuspicious = false;
+                // Else go to a cell with smell to kill monster.
+                if (m_lfcCellsWithRadiation.Any() && !bFlagOK)
                 {
                     int iCost = int.MaxValue;
-                    ForestCell dest = null/*m_lfcCellsWithSmell[new Random().Next(0, m_lfcCellsWithSmell.Count)]*/;
-                    //ForestCell fcNextCell;
-                    foreach (ForestCell fcItem in m_lfcCellsWithSmell)
+                    ForestCell dest = null;
+                    foreach (ForestCell fcRadiation in m_lfcCellsWithRadiation)
                     {
-
-                        Pathfinding.InitCost(this, fcItem);
-                        List<ForestCell> PathFound = Pathfinding.FindPath(this, fcItem);
+                        Pathfinding.InitCost(this, fcRadiation);
+                        // Find the fastest safe path to the destination cell.
+                        List<ForestCell> lfcPathFound = Pathfinding.FindPath(this, fcRadiation);
                         Pathfinding.ResetGridCost();
 
-
-                        if (PathFound.Count < iCost)
+                        // If the new path is better than the old one.
+                        if (lfcPathFound.Count < iCost)
                         {
-                            dest = fcItem;
-                            iCost = PathFound.Count;
-                            flagship = true;
+                            dest = fcRadiation;
+                            iCost = lfcPathFound.Count;
+                            bFlagSuspicious = true;
                         }
-
                     }
-                    if (flagship)
+                    if (bFlagSuspicious)
                     {
                         Move paActToMove = new Move(this, dest, iCost);
-                        aListActionPossible.Add(paActToMove);
+                        aListPossibleAction.Add(paActToMove);
                     }
-
-                    /*
-                    Random r = new Random();
-                    int index = r.Next(0, m_lfcCellsWithSmell.Count);
-                    ForestCell fcNextCell = m_lfcCellsWithSmell[index];
-                    Move paActToMove = new Move(this, fcNextCell);
-                    aListActionPossible.Add(paActToMove);
-                    flagship = true;*/
                 }
-                if (!flagship && !flag)
+                if (!bFlagSuspicious && !bFlagOK)
                 {
-                    // Else try a random remaining cell
+                    // Else try the closest suspicious cell.
                     if (m_lfcCellsSuspicous.Any())
                     {
-                        bool flagag = false;
+                        bool bPathFound = false;
                         int iCost = int.MaxValue;
-                        ForestCell dest = null/*m_lfcCellsSuspicous[new Random().Next(0, m_lfcCellsSuspicous.Count)]*/;
-                        //ForestCell fcNextCell;
-                        foreach (ForestCell fcItem in m_lfcCellsSuspicous)
+                        ForestCell fcDestination = null;
+                        foreach (ForestCell fcSuspicious in m_lfcCellsSuspicous)
                         {
-                            if (!fcItem.AlreadyVisited)
+                            if (!fcSuspicious.AlreadyVisited)
                             {
-                                Pathfinding.InitCost(this, fcItem);
-                                List<ForestCell> PathFound = Pathfinding.FindPath(this, fcItem);
+                                Pathfinding.InitCost(this, fcSuspicious);
+                                // Find the fastest safe path to the destination cell.
+                                List<ForestCell> lfcPathFound = Pathfinding.FindPath(this, fcSuspicious);
                                 Pathfinding.ResetGridCost();
 
-
-                                if (PathFound.Count < iCost)
+                                // If the new path is better than the old one.
+                                if (lfcPathFound.Count < iCost)
                                 {
-                                    dest = fcItem;
-                                    iCost = PathFound.Count;
-                                    flagag = true;
+                                    fcDestination = fcSuspicious;
+                                    iCost = lfcPathFound.Count;
+                                    bPathFound = true;
                                 }
                             }
                         }
-                        if (flagag)
+                        if (bPathFound)
                         {
-                            Move paActToMove = new Move(this, dest, iCost);
-                            aListActionPossible.Add(paActToMove);
+                            Move paActToMove = new Move(this, fcDestination, iCost);
+                            aListPossibleAction.Add(paActToMove);
                         }
-
                     }
                 }
             }
-            // Smell
+
+            // If the current cell contains radiation.
             if (p_iStateEnv == 1)
             {
-                bool flag = false;
-                // If there are some remaining safe cells, move there
+                bool bCellOKFlag = false;
+                // If there are some remaining safe cells, move there.
                 if (m_lfcCellsOK.Any())
                 {
                     int iCost = int.MaxValue;
-                    ForestCell dest = null/*m_lfcCellsOK[new Random().Next(0, m_lfcCellsOK.Count)]*/;
-                    //ForestCell fcNextCell;
-                    foreach (ForestCell fcItem in m_lfcCellsOK)
+                    ForestCell fcDestination = null;
+                    foreach (ForestCell fcOK in m_lfcCellsOK)
                     {
-                        if (!fcItem.AlreadyVisited)
+                        if (!fcOK.AlreadyVisited)
                         {
-                            Pathfinding.InitCost(this, fcItem);
-                            List<ForestCell> PathFound = Pathfinding.FindPath(this, fcItem);
+                            Pathfinding.InitCost(this, fcOK);
+                            // Find the fastest safe path to the destination cell.
+                            List<ForestCell> lfcPathFound = Pathfinding.FindPath(this, fcOK);
                             Pathfinding.ResetGridCost();
 
-                            if (PathFound.Count < iCost)
+                            // If the new path is better than the old one.
+                            if (lfcPathFound.Count < iCost)
                             {
-                                dest = fcItem;
-                                iCost = PathFound.Count;
-                                flag = true;
+                                fcDestination = fcOK;
+                                iCost = lfcPathFound.Count;
+                                bCellOKFlag = true;
                             }
                         }
                     }
-                    if (flag)
+                    // If we found a path.
+                    if (bCellOKFlag)
                     {
-                        Move paActToMove = new Move(this, dest, iCost);
-                        aListActionPossible.Add(paActToMove);
+                        Move paActToMove = new Move(this, fcDestination, iCost);
+                        aListPossibleAction.Add(paActToMove);
                     }
 
                 }
-                // Else try to kill monster
-                if (!flag)
+                // Else try to kill the alien.
+                if (!bCellOKFlag)
                 {
+                    // Try to find a valid target i.e. cell in m_lfcCellsSuspicous and not the cell we come from.
                     List<ForestCell> lfcTargets = CurrentForestCell.getAdjacentCells();
-                    // Remove cell visited just before from targets
+                    // Remove cell visited just before from targets.
                     for (int i = lfcTargets.Count - 1; i >= 0; i--)
                     {
-                        if (Memory[lfcTargets[i].LineIndex, lfcTargets[i].ColumnIndex].HasNoMonster == 1)
+                        if (Memory[lfcTargets[i].LineIndex, lfcTargets[i].ColumnIndex].HasNoAlien == 1 ||
+                            Memory[lfcTargets[i].LineIndex, lfcTargets[i].ColumnIndex].IsSafe == 1)
                         {
                             lfcTargets.Remove(lfcTargets[i]);
                         }
                     }
 
-                    // Randomly choose target from remaining cells
+                    // Randomly choose target from remaining cells.
                     Random r = new Random();
                     int iTargetIndex = r.Next(0, lfcTargets.Count);
 
                     if (lfcTargets[iTargetIndex].ColumnIndex < m_fcCurrentForestCell.ColumnIndex)
                     {
-                        aListActionPossible.Add(paActToThrowRockLeft);
-                        Debug.WriteLine("Throw rock left");
+                        aListPossibleAction.Add(paActToThrowRockLeft);
                     }
                     else
                     {
                         if (lfcTargets[iTargetIndex].ColumnIndex > m_fcCurrentForestCell.ColumnIndex)
                         {
-                            aListActionPossible.Add(paActToThrowRockRight);
-                            Debug.WriteLine("Throw rock right");
+                            aListPossibleAction.Add(paActToThrowRockRight);
                         }
                         else
                         {
                             if (lfcTargets[iTargetIndex].LineIndex < m_fcCurrentForestCell.LineIndex)
                             {
-                                aListActionPossible.Add(paActToThrowRockTop);
-                                Debug.WriteLine("Throw rock top");
+                                aListPossibleAction.Add(paActToThrowRockTop);
                             }
                             else
                             {
                                 if (lfcTargets[iTargetIndex].LineIndex > m_fcCurrentForestCell.LineIndex)
                                 {
-                                    aListActionPossible.Add(paActToThrowRockBottom);
-                                    Debug.WriteLine("Throw rock bottom");
+                                    aListPossibleAction.Add(paActToThrowRockBottom);
                                 }
                             }
                         }
                     }
-                    //Move paActToMove = new Move(this, lfcTargets[iTargetIndex]);
-                    //aListActionPossible.Add(paActToMove);
                 }
             }
 
             // Smell + Wind
             if (p_iStateEnv == 3)
             {
-                bool flag = false;
+                bool bCellOKFlag = false;
                 // If there are some remaining safe cells, move there
                 if (m_lfcCellsOK.Any())
                 {
                     int iCost = int.MaxValue;
-                    ForestCell dest = null/*m_lfcCellsOK[new Random().Next(0, m_lfcCellsOK.Count)]*/;
-                    //ForestCell fcNextCell;
-                    foreach (ForestCell fcItem in m_lfcCellsOK)
+                    ForestCell fcDestination = null;
+                    foreach (ForestCell fcOK in m_lfcCellsOK)
                     {
-                        if (!fcItem.AlreadyVisited)
+                        if (!fcOK.AlreadyVisited)
                         {
-                            Pathfinding.InitCost(this, fcItem);
-                            List<ForestCell> PathFound = Pathfinding.FindPath(this, fcItem);
+                            Pathfinding.InitCost(this, fcOK);
+                            // Find the fastest safe path to the destination cell.
+                            List<ForestCell> lfcPathFound = Pathfinding.FindPath(this, fcOK);
                             Pathfinding.ResetGridCost();
 
-
-                            if (PathFound.Count < iCost)
+                            // If the new path is better than the old one.
+                            if (lfcPathFound.Count < iCost)
                             {
-                                dest = fcItem;
-                                iCost = PathFound.Count;
-                                flag = true;
+                                fcDestination = fcOK;
+                                iCost = lfcPathFound.Count;
+                                bCellOKFlag = true;
                             }
                         }
                     }
-                    if (flag)
+                    if (bCellOKFlag)
                     {
-                        Move paActToMove = new Move(this, dest, iCost);
-                        aListActionPossible.Add(paActToMove);
+                        Move paActToMove = new Move(this, fcDestination, iCost);
+                        aListPossibleAction.Add(paActToMove);
                     }
 
                 }
-                // Else try to kill monster and wait for result
-                if (!flag)
+                // Else try to kill monster and wait for result.
+                if (!bCellOKFlag)
                 {
                     List<ForestCell> lfcTargets = CurrentForestCell.getAdjacentCells();
-                    // Remove cell visited just before from targets
+                    // Remove cell visited just before from targets.
                     for (int i = lfcTargets.Count - 1; i >= 0; i--)
                     {
-                        if (Memory[lfcTargets[i].LineIndex, lfcTargets[i].ColumnIndex].HasNoMonster == 1)
+                        if (Memory[lfcTargets[i].LineIndex, lfcTargets[i].ColumnIndex].HasNoAlien == 1)
                         {
                             lfcTargets.Remove(lfcTargets[i]);
                         }
                     }
-                    // if no more target, try random cell
+                    // if no more target, try random cell.
                     if (!lfcTargets.Any())
                     {
                         if (m_lfcCellsSuspicous.Any())
                         {
-                            bool flagship = false;
+                            bool bPathFound = false;
                             int iCost = int.MaxValue;
-                            ForestCell dest = null/*m_lfcCellsSuspicous[new Random().Next(0, m_lfcCellsSuspicous.Count)]*/;
-                            //ForestCell fcNextCell;
-                            foreach (ForestCell fcItem in m_lfcCellsSuspicous)
+                            ForestCell fcDestination = null;
+                            foreach (ForestCell fcSuspicious in m_lfcCellsSuspicous)
                             {
-                                if (!fcItem.AlreadyVisited)
+                                if (!fcSuspicious.AlreadyVisited)
                                 {
-                                    Pathfinding.InitCost(this, fcItem);
-                                    List<ForestCell> PathFound = Pathfinding.FindPath(this, fcItem);
+                                    Pathfinding.InitCost(this, fcSuspicious);
+                                    List<ForestCell> PathFound = Pathfinding.FindPath(this, fcSuspicious);
                                     Pathfinding.ResetGridCost();
 
                                     if (PathFound.Count < iCost)
                                     {
-                                        dest = fcItem;
+                                        fcDestination = fcSuspicious;
                                         iCost = PathFound.Count;
-                                        flagship = true;
+                                        bPathFound = true;
                                     }
                                 }
                             }
-                            if (flagship)
+                            if (bPathFound)
                             {
-                                Move paActToMove = new Move(this, dest, iCost);
-                                aListActionPossible.Add(paActToMove);
+                                Move paActToMove = new Move(this, fcDestination, iCost);
+                                aListPossibleAction.Add(paActToMove);
                             }
 
                         }
                     }
                     else
                     {
-                        // Randomly choose target from remaining cells
+                        // Randomly choose target from remaining cells.
                         Random r = new Random();
                         int iTargetIndex = r.Next(0, lfcTargets.Count);
 
                         if (lfcTargets[iTargetIndex].ColumnIndex < m_fcCurrentForestCell.ColumnIndex)
                         {
-                            aListActionPossible.Add(paActToThrowRockLeft);
-                            Debug.WriteLine("Throw rock left");
+                            aListPossibleAction.Add(paActToThrowRockLeft);
                         }
                         else
                         {
                             if (lfcTargets[iTargetIndex].ColumnIndex > m_fcCurrentForestCell.ColumnIndex)
                             {
-                                aListActionPossible.Add(paActToThrowRockRight);
-                                Debug.WriteLine("Throw rock right");
-
+                                aListPossibleAction.Add(paActToThrowRockRight);
                             }
                             else
                             {
                                 if (lfcTargets[iTargetIndex].LineIndex < m_fcCurrentForestCell.LineIndex)
                                 {
-                                    aListActionPossible.Add(paActToThrowRockTop);
-                                    Debug.WriteLine("Throw rock top");
+                                    aListPossibleAction.Add(paActToThrowRockTop);
                                 }
                                 else
                                 {
                                     if (lfcTargets[iTargetIndex].LineIndex > m_fcCurrentForestCell.LineIndex)
                                     {
-                                        aListActionPossible.Add(paActToThrowRockBottom);
-                                        Debug.WriteLine("Throw rock bottom");
+                                        aListPossibleAction.Add(paActToThrowRockBottom);
                                     }
                                 }
                             }
@@ -669,30 +682,17 @@ namespace MagicForest
             if (p_iStateEnv == 4)
             {
                 // GET OUT !
-                aListActionPossible.Add(paActToExit);
-            }
-            // Monster
-            if (p_iStateEnv == 5)
-            {
-                m_bStillAlive = false;
-                OnDeath();
-                return null;
-            }
-            // Hole
-            if (p_iStateEnv == 6)
-            {
-                m_bStillAlive = false;
-                OnDeath();
-                return null;
+                aListPossibleAction.Add(paActToExit);
             }
 
-            return aListActionPossible;
+            return aListPossibleAction;
         }
 
         /// <summary>
-        /// 
+        /// Determine action upon my goal.
+        /// No really used but here for the BDI implementation.
         /// </summary>
-        /// <param name="p_iStateEnv"></param>
+        /// <param name="p_iStateEnv"> Environment state. </param>
         /// <returns></returns>
         public PossibleAction DetermineActionUponMyGoal(int p_iStateEnv)
         {
@@ -722,6 +722,10 @@ namespace MagicForest
             return null;
         }
 
+        /// <summary>
+        /// Do the most appropriate action.
+        /// </summary>
+        /// <param name="p_paAction"> Action to do. </param>
         public void DoAction(PossibleAction p_paAction)
         {
             if (p_paAction != null)
@@ -730,15 +734,23 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Calculate worthitness of an action
+        /// </summary>
+        /// <param name="p_paAction"> Action. </param>
+        /// <param name="p_sMyGoal"> Hero goal. </param>
+        /// <param name="p_iStateEnv"> Environment state. </param>
+        /// <returns></returns>
         private int CalculateWorthiness(PossibleAction p_paAction, string p_sMyGoal, int p_iStateEnv)
         {
             int iWorthiness = -1;
 
             /* Depending on the state of the environment and the goal, we logically attibute a number of point to each counter
-             * This way, a particularly interesting action to perform will be set a high value of worthiness */
+             * This way, a particularly interesting action to perform will be set a high value of worthiness.
+             */
             switch (p_iStateEnv)
             {
-                // Empty
+                // Empty cell.
                 case 0:
                     if (p_paAction.Name() == "Move")
                     {
@@ -761,7 +773,7 @@ namespace MagicForest
                         iWorthiness = 0;
                     }
                     break;
-                // Smell
+                // Cell with rad.
                 case 1:
                     if (p_paAction.Name() == "Move")
                     {
@@ -784,7 +796,7 @@ namespace MagicForest
                         iWorthiness = 1;
                     }
                     break;
-                // Wind
+                // Cell with Wind.
                 case 2:
                     if (p_paAction.Name() == "Move")
                     {
@@ -807,7 +819,7 @@ namespace MagicForest
                         iWorthiness = 0;
                     }
                     break;
-                // Wind + smell
+                // Cell with wind + rad.
                 case 3:
                     if (p_paAction.Name() == "Move")
                     {
@@ -830,7 +842,7 @@ namespace MagicForest
                         iWorthiness = 1;
                     }
                     break;
-                // Light
+                // Cell with light.
                 case 4:
                     if (p_paAction.Name() == "Move")
                     {
@@ -872,7 +884,7 @@ namespace MagicForest
         }
 
         /// <summary>
-        /// Logical Stuff
+        /// Start the inference process to determine the action to do.
         /// </summary>
         public void Inference()
         {
@@ -882,7 +894,7 @@ namespace MagicForest
                  * - First we call GetEnvironmentState() which return the state of the environment.
                  * - The we call DetermineActionUponMyGoal() which determines which action will bring 
                  * the robot to its goal.
-                 * Finally we call DoAction() which executes the action which has been chose,.
+                 * Finally we call DoAction() which executes the action which has been chosen.
                  */
                 GetEnvironmentState();
                 DoAction(DetermineActionUponMyGoal(UpdateMyState()));

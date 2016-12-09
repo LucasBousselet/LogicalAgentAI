@@ -11,30 +11,103 @@ namespace MagicForest
     /// </summary>
     public partial class ForestCell : UserControl
     {
+        /// <summary>
+        /// Cell line index.
+        /// </summary>
         private int m_iLineIndex;
+        /// <summary>
+        /// Cell column index.
+        /// </summary>
         private int m_iColumnIndex;
+
+        /// <summary>
+        /// Cell state for the pathfinding.
+        /// </summary>
         private bool m_bClosed = false;
+        /// <summary>
+        /// Parameter distance to goal for the pathfinding.
+        /// </summary>
+        private double m_dDistance;
+        /// <summary>
+        /// Parent cell, used for pathfinding.
+        /// </summary>
+        private ForestCell m_fcParentCell;
 
-        public double F { get { return G + H; } set {; } }
-        public double G;
-        public double H;
-        public ForestCell ParentCell;
-
+        /// <summary>
+        /// Boolean to set if we have a Hero on the cell.
+        /// </summary>
         private bool m_bHasHero = false;
+        /// <summary>
+        /// Boolean to set if we have the portal on the cell.
+        /// </summary>
         private bool m_bHasPortal = false;
-        private bool m_bHasMonster = false;
+        /// <summary>
+        /// Boolean to set if we have an alien on the cell.
+        /// </summary>
+        private bool m_bHasAlien = false;
+        /// <summary>
+        /// Boolean to set if we have a hole on the cell.
+        /// </summary>
         private bool m_bHasHole = false;
+        /// <summary>
+        /// Boolean to set if we have some wind on the cell.
+        /// </summary>
         private bool m_bHasWind = false;
-        private bool m_bHasPoop = false;
+        /// <summary>
+        /// Boolean to set if we have some radiation on the cell.
+        /// </summary>
+        private bool m_bHasRadiation = false;
+        /// <summary>
+        /// Boolean to set if we have nothing on the cell.
+        /// </summary>
         private bool m_bHasNothing = true;
 
+        /// <summary>
+        /// Mark if the call has already been visited.
+        /// </summary>
         private bool m_bAlreadyVisited = false;
 
+        /// <summary>
+        /// Creat a new forest cell.
+        /// </summary>
         public ForestCell()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Get / set the m_dDistance.
+        /// </summary>
+        public double Distance
+        {
+            get
+            {
+                return m_dDistance;
+            }
+            set
+            {
+                m_dDistance = value;
+            }
+        }
+
+        /// <summary>
+        /// Get / set the m_fcParentCell.
+        /// </summary>
+        public ForestCell ParentCell
+        {
+            get
+            {
+                return m_fcParentCell;
+            }
+            set
+            {
+                m_fcParentCell = value;
+            }
+        }
+
+        /// <summary>
+        /// Get / set the m_bClosed
+        /// </summary>
         public bool Closed
         {
             get
@@ -46,7 +119,9 @@ namespace MagicForest
                 m_bClosed = value;
             }
         }
-
+        /// <summary>
+        /// Get / set the m_iLineIndex.
+        /// </summary>
         public int LineIndex
         {
             get
@@ -59,6 +134,9 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get / set the m_iColumnIndex.
+        /// </summary>
         public int ColumnIndex
         {
             get
@@ -71,6 +149,9 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get / set the m_bHasHero.
+        /// </summary>
         public bool HasHero
         {
             get
@@ -83,6 +164,9 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get / set the m_bHasPortal
+        /// </summary>
         public bool HasPortal
         {
             get
@@ -95,18 +179,24 @@ namespace MagicForest
             }
         }
 
-        public bool HasMonster
+        /// <summary>
+        /// Get / set the m_bHasAlien
+        /// </summary>
+        public bool HasAlien
         {
             get
             {
-                return m_bHasMonster;
+                return m_bHasAlien;
             }
             set
             {
-                m_bHasMonster = value;
+                m_bHasAlien = value;
             }
         }
 
+        /// <summary>
+        /// Get / set the m_bHasHole.
+        /// </summary>
         public bool HasHole
         {
             get
@@ -119,6 +209,9 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get / set the m_bHasWind.
+        /// </summary>
         public bool HasWind
         {
             get
@@ -131,19 +224,24 @@ namespace MagicForest
             }
         }
 
-        public bool HasPoop
+        /// <summary>
+        /// Get / set the m_bHasRadiation.
+        /// </summary>
+        public bool HasRadiation
         {
             get
             {
-                return m_bHasPoop;
+                return m_bHasRadiation;
             }
             set
             {
-                m_bHasPoop = value;
-                // UPDATE SPRITE ! (REMOVE IF MONSTER IS KILLED)
+                m_bHasRadiation = value;
             }
         }
 
+        /// <summary>
+        /// Get / set the m_bHasNothing.
+        /// </summary>
         public bool HasNothing
         {
             get
@@ -156,6 +254,9 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get / set the m_bAlreadyVisited
+        /// </summary>
         public bool AlreadyVisited
         {
             get
@@ -168,6 +269,10 @@ namespace MagicForest
             }
         }
 
+        /// <summary>
+        /// Get the adjacent cell of a given cell.
+        /// </summary>
+        /// <returns> A list of the adjacent cells. </returns>
         public List<ForestCell> getAdjacentCells()
         {
             List<ForestCell> lfcResult = new List<ForestCell>();
@@ -193,93 +298,94 @@ namespace MagicForest
         }
 
         /// <summary>
-        /// Adds a monster to the cell, and poops to the neighboring cells
+        /// Adds an alien to the cell, and poops to the neighboring cells.
         /// </summary>
-        public void AddMonsterOnCell()
+        public void AddAlienOnCell()
         {
             List<ForestCell> listOfNeighbors = new List<ForestCell>();
 
-            HasMonster = true;
+            HasAlien = true;
             HasNothing = false;
             listOfNeighbors = getAdjacentCells();
             for (int i = 0; i < listOfNeighbors.Count(); i++)
             {
-                listOfNeighbors[i].AddPoop();
+                listOfNeighbors[i].AddRadiation();
             }
         }
 
         /// <summary>
-        /// Removes the fact that a cell contains a monster (used after throwing a rock at it)
-        /// It also updates the neighoring cell and clean them from the smell, BUT ONLY if
-        /// no monster are around anymore in any other neighboring cells
+        /// Removes the fact that a cell contains a alien (used after throwing a rock at it)
+        /// It also updates the neighoring cell and clean them from the radiation, BUT ONLY if
+        /// no alien are around anymore in any other neighboring cells.
         /// </summary>
-        public void RemoveMonsterOnCell()
+        public void RemoveAlienOnCell()
         {
-            // If the cell already does not contain a monster, we don't do anything
-            // (the case may arise when the hero throws a rock on an empty case)
-            if (!m_bHasMonster)
+            // If the cell already does not contain a alien, we don't do anything
+            // (the case may arise when the hero throws a rock on an empty case).
+            if (!m_bHasAlien)
             {
                 return;
             }
 
-            // Neighbors of the cell we removed a monster from
+            // Neighbors of the cell we removed a alien from.
             List<ForestCell> listOfNeighbors = new List<ForestCell>();
-            // Neighbors of the smelly cell we try to clean up
-            List<ForestCell> listOfSmellyCaseNeighbors = new List<ForestCell>();
+            // Neighbors of the radioactive cell we try to clean up.
+            List<ForestCell> listOfRadCellNeighbors = new List<ForestCell>();
+            // Boolean used to know if the neighboors cell of radiation still have an alien.
             bool monstersAreStillHere = false;
 
-            m_bHasMonster = false;
-            // We know for sure it has nothing after the monster is killed,
-            // because a cell can not contain a monster and something else
+            m_bHasAlien = false;
+            // We know for sure it has nothing after the alien is killed,
+            // because a cell can not contain a alien and something else.
             m_bHasNothing = true;
             listOfNeighbors = getAdjacentCells();
-            // For each neighbors of the case where we killed the monster ...
+            // For each neighbors of the case where we killed the alien...
             for (int i = 0; i < listOfNeighbors.Count(); i++)
             {
                 monstersAreStillHere = false;
-                // ... we also retrieve its neighbors ... 
-                listOfSmellyCaseNeighbors = listOfNeighbors[i].getAdjacentCells();
+                // ...we also retrieve its neighbors... 
+                listOfRadCellNeighbors = listOfNeighbors[i].getAdjacentCells();
                 // ... check in every one of them ...
-                for (int j = 0; j < listOfSmellyCaseNeighbors.Count(); j++)
+                for (int j = 0; j < listOfRadCellNeighbors.Count(); j++)
                 {
-                    // ... if it still has a monster ...
-                    if (listOfSmellyCaseNeighbors[j].m_bHasMonster)
+                    // ...if it still has an alien...
+                    if (listOfRadCellNeighbors[j].m_bHasAlien)
                     {
                         monstersAreStillHere = true;
                     }
                 }
                 if (!monstersAreStillHere)
                 {
-                    // ... before at last removing the poop !
-                    listOfNeighbors[i].RemovePoop();
+                    // ...before at last removing the radiation !
+                    listOfNeighbors[i].RemoveRadiation();
                 }
             }
         }
 
         /// <summary>
-        /// Adds a monster image to the cell
+        /// Adds a alien image to the cell.
         /// </summary>
-        public void AddMonsterImage()
+        public void AddAlienImage()
         {
             BitmapImage image = new BitmapImage(new Uri("Ressources/alien.jpg", UriKind.Relative));
             cellImage.Source = image;
         }
 
         /// <summary>
-        /// Adds a "danger" image to the cell
+        /// Adds a "danger" image to the cell.
         /// </summary>
-        public void AddPoop()
+        public void AddRadiation()
         {
-            HasPoop = true;
+            HasRadiation = true;
             HasNothing = false;
         }
 
         /// <summary>
-        /// Removes the fact that a cell contains poops
+        /// Removes the fact that a cell contains radiation.
         /// </summary>
-        public void RemovePoop()
+        public void RemoveRadiation()
         {
-            HasPoop = false;
+            HasRadiation = false;
             if ((HasPortal == false) && (HasWind == false))
             {
                 HasNothing = true;
@@ -287,16 +393,16 @@ namespace MagicForest
         }
 
         /// <summary>
-        /// Adds a poop image to the cell
+        /// Adds a danger image to the cell.
         /// </summary>
-        public void AddPoopImage()
+        public void AddDangerImage()
         {
             BitmapImage image = new BitmapImage(new Uri("Ressources/danger.jpg", UriKind.Relative));
             cellImage.Source = image;
         }
 
         /// <summary>
-        /// Removes any image from the cell
+        /// Removes any image from the cell.
         /// </summary>
         public void RemoveImage()
         {
@@ -305,7 +411,7 @@ namespace MagicForest
         }
 
         /// <summary>
-        /// Adds a "hole" to the cell, and winds to the neighboring cells
+        /// Adds a "hole" to the cell, and winds to the neighboring cells.
         /// </summary>
         public void AddHoleOnCell()
         {
@@ -321,7 +427,7 @@ namespace MagicForest
         }
 
         /// <summary>
-        /// Adds a hole image to the cell
+        /// Adds a hole image to the cell.
         /// </summary>
         public void AddHoleImage()
         {
@@ -330,7 +436,7 @@ namespace MagicForest
         }
 
         /// <summary>
-        /// Adds a "wind" image to the cell
+        /// Adds a "wind" image to the cell.
         /// </summary>
         public void AddWind()
         {
@@ -339,7 +445,7 @@ namespace MagicForest
         }
 
         /// <summary>
-        /// Adds a wind image to the cell
+        /// Adds a wind image to the cell.
         /// </summary>
         public void AddWindImage()
         {
@@ -348,7 +454,7 @@ namespace MagicForest
         }
 
         /// <summary>
-        /// Adds a "portal"  to the cell
+        /// Adds a "portal" to the cell.
         /// </summary>
         public void AddPortalOnCell()
         {
@@ -357,7 +463,7 @@ namespace MagicForest
         }
 
         /// <summary>
-        /// Adds a portal image to the cell
+        /// Adds a portal image to the cell.
         /// </summary>
         public void AddPortalImage()
         {
@@ -366,20 +472,23 @@ namespace MagicForest
         }
 
         /// <summary>
-        /// Adds a "hero" image to the cell
+        /// Adds a "hero" image to the cell.
         /// </summary>
         public void AddHeroOnCell()
         {
             HasHero = true;
         }
 
+        /// <summary>
+        /// Remove the hero from the cell.
+        /// </summary>
         public void RemoveHeroFromCell()
         {
             HasHero = false;
         }
 
         /// <summary>
-        /// Adds a hero image to the cell
+        /// Adds a hero image to the cell.
         /// </summary>
         public void AddHeroImage()
         {
